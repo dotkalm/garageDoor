@@ -2,6 +2,8 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
 import styles from '../styles/Home.module.css'
+import { GARAGE_LOG_QUERY } from '../client/queries'
+const url = process.env.GRAPHQL_API || ''
 
 const Home: NextPage = () => {
   return (
@@ -68,5 +70,17 @@ const Home: NextPage = () => {
     </div>
   )
 }
-
+export async function getStaticProps(){
+	const variables = { "lastKnownTimestamp": 1631550336042 } 
+	const response = await postRequest(url, GARAGE_LOG_QUERY, variables)
+	if(response.errors){
+		return { props: { option: true }}
+	}
+	const { garageLog } = response.data 
+	return {
+		props: {
+			garageLog
+		}
+	}
+}
 export default Home
