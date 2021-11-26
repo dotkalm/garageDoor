@@ -8,10 +8,12 @@ type FieldType = string | FieldPath
 type OpperatorType =  '<'| '<='| '=='| '!='| '>='| '>'| 'array-contains'| 'in'| 'array-contains-any'| 'not-in' 
 type ValueType = string | number | boolean | object | FieldPath
 type OrderByType = OrderByDirection 
+
 export type QueryType = {
 	field: FieldType,
 	opperator?: OpperatorType,
-	value: ValueType,
+	value?: ValueType,
 	orderBy?: OrderByType
 }
+
 export type CollectionType = CollectionReference | Query
