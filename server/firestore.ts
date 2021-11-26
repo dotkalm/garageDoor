@@ -1,7 +1,9 @@
 import admin from 'firebase-admin'
+import { QueryType } from './types/firestore'
+
 if (!admin.apps.length) {
-	const privateKey = () => {
-		const a = process.env.FIREBASE_PRIVATE_KEY.split("\\n");
+	const privateKey = (privateKey: string): string => {
+		const a = privateKey.split("\\n");
 		let string = [];
 		for (let i = 0; i < a.length; i++) {
 			if (i === 0) {
@@ -14,44 +16,22 @@ if (!admin.apps.length) {
 		}
 		return string.join('\n').replace(/^"/,'').replace(/"$/,'')
 	}
-	const token = process.env.FIREBASE_TOKEN
-	const jsonObject = JSON.parse(process.env.FIREBASE_CONFIG)
-	jsonObject.type = process.env.FIREBASE_TYPE
-	jsonObject.project_id = process.env.FIREBASE_PROJECT_ID
-	jsonObject.private_key_id = process.env.FIREBASE_PRIVATE_KEY_ID
-	jsonObject.private_key = privateKey()
-	jsonObject.client_email = process.env.FIREBASE_CLIENT_EMAIL
-	jsonObject.client_id = process.env.FIREBASE_CLIENT_ID
+	const firebaseCreds: object = { 
+		type: process.env.FIREBASE_TYPE,
+		project_id: process.env.FIREBASE_PROJECT_ID,
+		private_key_id: process.env.FIREBASE_PRIVATE_KEY_ID,
+		private_key: privateKey(process.env.FIREBASE_PRIVATE_KEY),
+		client_email: process.env.FIREBASE_CLIENT_EMAIL,
+		client_id: process.env.FIREBASE_CLIENT_ID,
+	}
 	admin.initializeApp({
-		credential: admin.credential.cert(jsonObject)
+		credential: admin.credential.cert(firebaseCreds)
 	})
 }else{
 	admin.app()
 }
 const db = admin.firestore()
-
-export const getDoc = async (collectionName, docUid) => {
-	return db.collection(collectionName).doc(docUid)
-	.get()
-	.then(doc => {
-		if(doc.exists){
-			return {...doc.data(), uid: doc.id}
-		}else{
-			return 'not here'
-		}
-	})
-}
-export const addDoc = async (collectionName, obj) => {
-	return db.collection(collectionName).add(obj)
-	.then(doc => doc.id)
-	.catch(err => err)
-}
-export const setDoc = async (collectionName, obj, uid) => {
-	return db.collection(collectionName).doc(uid).set(obj)
-	.then(() => 'success')
-	.catch(err => err)
-}
-export const getCollection = async (collectionName, queryArray)  => {
+export const getCollection = async(collectionName: string, queryArray?: QueryArray[]):Promise<object> => {
 	let collectionReference = db.collection(collectionName)
 	if(queryArray){
 		for(let i=0; i < queryArray.length; i++){
@@ -84,31 +64,3 @@ export const getCollection = async (collectionName, queryArray)  => {
 		return err
 	})
 }
-export const updateDoc = async (collectionName, obj, uid) => {
-	return db.collection(collectionName).doc(uid).update(obj)
-	.then(() => 'success')
-	.catch(err => err)
-}
-export const deleteField = async (uid, fields, collectionName) => {
-	const obj = {}
-	for(let i = 0; i < fields.length; i++){
-		obj[fields[i]] = admin.firestore.FieldValue.delete()
-	}
-	return db.collection(collectionName).doc(uid).update(obj)
-	.then(() => 'success')
-	.catch(err => err)
-}
-export const deleteDoc = async (collectionName, uid) => {
-	return db.collection(collectionName).doc(uid).delete()
-	.then(() => 'success')
-	.catch(err => err)
-}
-export const mergeDocIfExists = async (collectionName, obj, uid) => {
-	return db.collection(collectionName).doc(uid).set(obj, {merge: true})
-	.then(() => 'success')
-	.catch(err => {
-		console.log(obj, collectionName, uid, err)
-		return err
-	})
-}
-
