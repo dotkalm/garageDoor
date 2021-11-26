@@ -10,10 +10,11 @@ type ValueType = string | number | boolean | object | FieldPath
 type OrderByType = OrderByDirection 
 
 export type QueryType = {
-	field: FieldType,
+	field?: FieldType,
 	opperator?: OpperatorType,
 	value?: ValueType,
-	orderBy?: OrderByType
+	orderBy?: OrderByType,
+	limit?: boolean,
 }
 
 export type CollectionType = CollectionReference | Query

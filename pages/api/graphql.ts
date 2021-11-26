@@ -1,6 +1,4 @@
 import type { IncomingMessage, ServerResponse } from 'http';
-
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { graphqlHTTP, GraphQLParams } from 'express-graphql'
 import type {
 	DocumentNode,
@@ -26,9 +24,7 @@ import {
 	specifiedRules,
 } from 'graphql';
 
-type Data = {
-	name: string
-}
+import Schema from '../../graphql/schema' 
 export type Request = IncomingMessage & { url: string };
 
 type Response = ServerResponse & { json?: (data: unknown) => void };
@@ -64,11 +60,6 @@ export interface OptionsData {
 	typeResolver?: GraphQLTypeResolver<unknown, unknown>;
 }
 
-const Schema = buildSchema(`
-	type Query {
-		hello: String
-	}
-`)
 async function server(req: Request, res: Response, graphQLParams: GraphQLParams | undefined){
 	return {
 		schema: Schema,
