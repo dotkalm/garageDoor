@@ -23,21 +23,19 @@ export async function getCollection(collectionName: string, queryArray?: QueryTy
 		let collectionReference: CollectionType = db.collection(collectionName)
 		if(queryArray){
 			for(let i=0; i < queryArray.length; i++){
-				const [ field, opperator, value ] = queryArray[i]
-				if(field === 'orderBy'){
-					let val = value
-					if(value === 'firestoreDocumentId'){
-						val = admin.firestore.FieldPath.documentId()
-					}
-					collectionReference = collectionReference.orderBy(val, opperator)
-				}else if(field === 'limit' && !opperator){
+				const { field, opperator, value, orderBy } = queryArray[i]
+				if(field === 'orderBy' && orderBy){
+					collectionReference = collectionReference.orderBy(field, orderBy)
+				}else if(field === 'orderBy' && value === 'firestoreDocumentId' && orderBy){
+					const docSort = admin.firestore.FieldPath.documentId()
+					collectionReference = collectionReference.orderBy(docSort, orderBy)
+				}else if(field === 'limit' && !opperator && typeof value === 'number'){
 					collectionReference = collectionReference.limit(value)
-				}else{
-					let f = field
-					if(field === 'firestoreDocumentId'){
-						f = admin.firestore.FieldPath.documentId() 
-					}
+				}else if((field === 'firestoreDocumentId') && opperator){
+					const f = admin.firestore.FieldPath.documentId() 
 					collectionReference = collectionReference.where(f, opperator, value)
+				}else{
+					throw new Error('conditions not met')
 				}
 			}
 		}
