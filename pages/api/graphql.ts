@@ -2,7 +2,7 @@ import type { IncomingMessage, ServerResponse } from 'http';
 
 import type { NextApiRequest, NextApiResponse } from 'next'
 import { graphqlHTTP, GraphQLParams } from 'express-graphql'
-import type {  
+import type {
 	DocumentNode,
 	ValidationRule,
 	ExecutionArgs,
@@ -29,7 +29,7 @@ import {
 type Data = {
 	name: string
 }
-type Request = IncomingMessage & { url: string };
+export type Request = IncomingMessage & { url: string };
 
 type Response = ServerResponse & { json?: (data: unknown) => void };
 type MaybePromise<T> = Promise<T> | T;
