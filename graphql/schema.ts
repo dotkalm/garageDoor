@@ -17,8 +17,6 @@ const RootQuery = new GraphQLObjectType({
 		hello: {
 			type: GraphQLString,
 			resolve(): string{
-				return 'hello'
-			}
 		}
 	}
 })
