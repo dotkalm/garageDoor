@@ -1,4 +1,4 @@
 .timeColumn{
-	grid-column: 8/10;
+	grid-column: 8/ span 10;
 	text-align: right;
 }

@@ -1,7 +1,6 @@
 export default function GarageDoor(){
 	return(
-		<>
-			entries
-		</>
+		<div>
+		</div>
 	)
 }

@@ -1,5 +1,5 @@
 .activityColumn{
-	grid-column: 5/ 7;
+	grid-column: 4/ 8;
 }
 .openOrClosedText::first-letter{
 	text-transform: uppercase;
