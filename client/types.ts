@@ -1,9 +1,14 @@
 export type DayProps = {
-	day: GarageLogType
+	day: GarageLogType,
+	index: number
 }
 export type EntriesType = {
 	timestamp: number,
 	action: "OPEN" | "CLOSED"
+}
+export type DayEntryProps = {
+	dayLabel: string,
+	entries: EntriesType[]
 }
 export type GarageLogType = {
 	uid: number,
