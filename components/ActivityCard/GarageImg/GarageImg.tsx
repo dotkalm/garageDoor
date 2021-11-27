@@ -1,6 +1,6 @@
 import Image from 'next/image'
 import style from './GarageImg.module.css'
-import { EntriesType } from '../../client/types'
+import { EntriesType } from '/client/types'
 
 export default function GarageImg({ action }){
 	const dim = '6'

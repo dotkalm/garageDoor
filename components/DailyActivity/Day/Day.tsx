@@ -1,5 +1,5 @@
-import isTodayOrYesterdayOtherwise from '../../actions/isTodayOrYesterdayOtherwise'
-import { DayProps } from '../../client/types'
+import isTodayOrYesterdayOtherwise from '/actions/isTodayOrYesterdayOtherwise'
+import { DayProps } from '/client/types'
 import DayEntry from '../DayEntry'
 
 export default function Day({day: {uid, entries}, index}: DayProps){
