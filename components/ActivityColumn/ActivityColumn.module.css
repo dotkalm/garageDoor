@@ -1,0 +1,6 @@
+.activityColumn{
+	grid-column: 5/ 7;
+}
+.openOrClosedText::first-letter{
+	text-transform: uppercase;
+}

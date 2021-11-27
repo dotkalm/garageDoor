@@ -1,0 +1,16 @@
+.outside{
+	grid-column: 2/3;
+	border-radius: 100%;
+	display: grid;
+	height: 5em;
+	width: 5em;
+	margin: 1em;
+	padding: .5em;
+	aspect-ratio: 1;
+}
+.open{
+	background-color: lightblue;
+}
+.closed{
+	background-color: rgb(142, 222, 151);
+}
