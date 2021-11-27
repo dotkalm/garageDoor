@@ -11,6 +11,7 @@ export default function DayEntry({entries, dayLabel}: DayEntryProps){
 	return(
 		<div className={styles.day}>
 			{dayLabel}
+			{activities}
 		</div>
 	)
 }
