@@ -1,6 +1,6 @@
 import styles from './DayEntry.module.css'
-import { DayEntryProps } from '/client/types'
-import ActivityCard from '../../ActivityCard'
+import { DayEntryProps } from 'client/types'
+import ActivityCard from 'components/ActivityCard'
 
 export default function DayEntry({entries, dayLabel}: DayEntryProps){
 

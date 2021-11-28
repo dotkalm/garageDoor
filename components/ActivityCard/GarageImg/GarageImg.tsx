@@ -1,8 +1,8 @@
 import Image from 'next/image'
 import style from './GarageImg.module.css'
-import { EntriesType } from '/client/types'
+import { EntriesType } from 'client/types'
 
-export default function GarageImg({ action }){
+export default function GarageImg({ action }: Pick<EntriesType, 'action'>){
 	const dim = '6'
 	return action === 'OPEN' ? (
 		<div className={`${style.outside} ${style.open}`}>

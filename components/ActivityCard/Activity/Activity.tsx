@@ -1,4 +1,4 @@
-import type { EntriesType } from '../../client/types'
+import type { EntriesType } from 'client/types'
 import styles from './Activity.module.css'
 import GarageImg from '../GarageImg'
 import ActivityColumn from '../ActivityColumn'

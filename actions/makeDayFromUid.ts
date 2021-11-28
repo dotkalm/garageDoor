@@ -11,7 +11,7 @@ export default function isTodayOrYesterdayOtherwise(timestamp: number): string{
 	if(yesterdayAsLocalString === entryAsLocalString){
 		return 'Yesterday'
 	}
-	let asLocalString = new Date(Number(timestamp)).toDateString('en-US', { timeZone: 'America/Los_Angeles' }).split(' ')
+	let asLocalString = new Date(Number(timestamp)).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' }).split(' ')
 	asLocalString.splice(0,1)
 	const [ month, day, year ] = asLocalString
 

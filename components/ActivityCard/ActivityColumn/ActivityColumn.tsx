@@ -1,5 +1,5 @@
 import style from './ActivityColumn.module.css'
-import { EntriesType } from '/client/types'
+import { EntriesType } from 'client/types'
 
 
 export default function ActivityColumn({ action }: Pick<EntriesType, 'action'>){
