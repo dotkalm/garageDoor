@@ -2,6 +2,7 @@ import { firestore } from 'firebase-admin'
 
 export type OrderByDirection = 'desc' | 'asc'
 type CollectionReference = firestore.CollectionReference
+export type DocumentReference = firestore.DocumentReference
 type Query = firestore.Query
 type FieldPath = firestore.FieldPath
 type FieldType = string | FieldPath

@@ -1,5 +1,5 @@
 import admin from 'firebase-admin'
-import { QueryType, CollectionType } from './types/firestore'
+import { QueryType, CollectionType, DocumentReference } from './types/firestore'
 import privateKeyParser from './services/privateKeyParser'
 if (!admin.apps.length) {
 	const firebaseCreds: object = { 
@@ -17,6 +17,28 @@ if (!admin.apps.length) {
 	admin.app()
 }
 const db = admin.firestore()
+
+export async function getDocumentSnapshot(collectionName: string, documentName: string){
+	try{
+		const observer = doc.onSnapshot(docSnapshot => {
+			console.log(`Received doc snapshot: ${docSnapshot}`);
+		}, err => {
+			console.log(`Encountered error: ${err}`);
+		});
+	}catch(err){
+	}
+}
+
+export async function getDocument(collectionName: string, documentName: string){
+	try{
+		const doc: DocumentReference = await db.collection(collectionName).doc(documentName).get()
+		const lastUpdated = doc._updateTime
+		return { ...doc.data(), lastUpdated }
+	}catch(err){
+		console.log(err)
+		return err
+	}
+}
 
 export async function getCollection(collectionName: string, queryArray?: QueryType[]): Promise<Array<object> | Error | undefined> {
 	try{

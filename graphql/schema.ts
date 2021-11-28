@@ -5,8 +5,9 @@ import {
 	GraphQLSchema,
 	GraphQLString,
 } from 'graphql'
-import { ActivityType } from './types'
-import { garageEntries } from './resolvers'
+
+import { ActivityType, GarageState } from './types'
+import { garageEntries, garageStateResolver } from './resolvers'
 import Subscription from './subscription'
 
 const RootQuery = new GraphQLObjectType({
@@ -21,6 +22,11 @@ const RootQuery = new GraphQLObjectType({
 			},
 			resolve: garageEntries,
 		},
+		garageState: {
+			type: GarageState,
+			description: 'garage state',
+			resolve: garageStateResolver,
+		}
 	},
 })
 

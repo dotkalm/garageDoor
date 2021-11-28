@@ -7,11 +7,13 @@ const {
 	GraphQLFloat,
 	GraphQLBoolean
 } = graphql
+
 export const GarageState = new GraphQLObjectType({
 	name: 'GarageState',
 	description: 'state of garage',
 	fields: () => ({
-		state: { type: GraphQLBoolean }
+		open: { type: GraphQLBoolean },
+		lastUpdated: { type: GraphQLFloat }
 	})
 })
 export const EntryType = new GraphQLObjectType({

@@ -1,5 +1,5 @@
 import { subscribe } from 'graphql'
-import { getCollection } from 'server/firestore'
+import { getCollection, getDocument } from 'server/firestore'
 import { QueryType } from 'server/types/firestore'
 import makeDateString from 'actions/makeDateString'
 import sleep from 'actions/sleep'
@@ -13,14 +13,11 @@ export async function* garageStateGenerator(){
 	}
 }
 
-export async function* garageStateResolver(parent, args, request){
-	const a = await garageStateGenerator()
-	let t = true
-	while(t){
-		const { value, done } = await a.next()
-		t = !done	
-		yield value
-	}
+export async function garageStateResolver(parent, args, request){
+	console.log('garage', 'status')
+	const data = await getDocument('garage', 'status')
+	console.log(data)
+	return data 
 }
 
 export async function garageEntries(parent, args, request){
