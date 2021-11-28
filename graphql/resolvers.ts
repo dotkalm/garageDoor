@@ -9,15 +9,11 @@ import type { GarageEntriesArgs } from 'server/types/args'
 export async function garageStateResolver(parent: undefined, args: object, request: Request){
 	try{
 		const data = await getDocument('garage', 'status')
-		console.log(data)
 		if(!data){
 			throw new Error('data is undefined')
 		}
 		if(typeof data !== 'object'){
 			throw new Error('data is not an object')
-		}
-		if(!('lastUpdated' in data)){
-			throw new Error('no lastUpated property in data')
 		}
 		return data 
 	}catch(err){

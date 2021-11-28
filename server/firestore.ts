@@ -27,7 +27,6 @@ const db = admin.firestore()
 export async function getDocument(collectionName: string, documentName: string){
 	try{
 		const doc: DocumentSnapshot = await db.collection(collectionName).doc(documentName).get()
-		console.log(doc.exists)
 		if(!doc.exists || doc === undefined){
 			throw new Error('does not exist')
 		}
