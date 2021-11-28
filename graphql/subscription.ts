@@ -1,17 +1,20 @@
 import * as graphql from 'graphql'
-import { garageStateResolver } from './resolvers'
+import { GarageState } from './types'
+import { garageStateGenerator, garageStateResolver } from './resolvers'
 const {
 	GraphQLObjectType,
 	GraphQLBoolean,
+	subscribe,
 } = graphql
 
 const Subscription = new GraphQLObjectType({
 	name: 'Subscription',
 	fields:{
 		garageState: { 
-			type: GraphQLBoolean,
+			name: 'GarageState',
+			type: GarageState,
 			description: 'garage state',
-			resolve: garageStateResolver,
+			subscribe: garageStateGenerator,
 		}
 	}
 })
