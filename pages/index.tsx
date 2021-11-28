@@ -1,11 +1,12 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
-import postRequest from '../actions/postRequest'
-import styles from '../styles/Home.module.css'
-import { GARAGE_LOG_QUERY_TO_LIMIT, GARAGE_LOG_QUERY } from '../client/queries'
-import { GarageLogResponse, GarageLogProps } from '../client/types'
-import GarageDoor from '../components/GarageDoor'
-import Entries from '../components/Entries'
+import postRequest from 'actions/postRequest'
+import styles from 'styles/Home.module.css'
+import { GARAGE_LOG_QUERY_TO_LIMIT } from 'client/queries'
+import { GarageLogResponse, GarageLogProps } from 'client/types'
+import GarageDoor from 'components/GarageDoor'
+import Entries from 'components/Entries'
+
 const url = `${process.env.GRAPHQL_HOST}${process.env.GRAPHQL_API}`
 
 const Home = (props: GarageLogProps) => {

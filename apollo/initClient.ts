@@ -10,9 +10,8 @@ import { onError } from '@apollo/client/link/error'
 import { jwtDecodeExp } from '../actions/jwt'
 
 const httpLink = createHttpLink({
-	uri: process.env.GRAPHQL_API,
+	uri: process.env.NEXT_PUBLIC_GRAPHQL_API,
 })
-
 const authLink = setContext((_, { headers }) => {
 	const jwt = localStorage.getItem('jwt')
 	if (!jwt) return { headers }
