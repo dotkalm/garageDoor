@@ -24,20 +24,20 @@ import {
 	specifiedRules,
 } from 'graphql';
 
-import Schema from '../../graphql/schema' 
+import Schema from 'graphql/schema' 
+
 export type Request = IncomingMessage & { url: string };
 
 type Response = ServerResponse & { json?: (data: unknown) => void };
 type MaybePromise<T> = Promise<T> | T;
-export type Options =
+type Options =
 	| ((
 		request: Request,
 		response: Response,
 		params?: GraphQLParams,
 	) => MaybePromise<OptionsData>)
 	| MaybePromise<OptionsData>;
-
-export interface OptionsData {
+interface OptionsData {
 	schema: GraphQLSchema;
 	context?: unknown;
 	rootValue?: unknown;
@@ -60,10 +60,16 @@ export interface OptionsData {
 	typeResolver?: GraphQLTypeResolver<unknown, unknown>;
 }
 
+const PORT = 4000;
+const subscriptionEndpoint = `ws://localhost:${PORT}/subscriptions`;
+
 async function server(req: Request, res: Response, graphQLParams: GraphQLParams | undefined){
 	return {
 		schema: Schema,
-		graphiql: true,
+		graphiql: {
+      subscriptionEndpoint,
+      websocketClient: 'v1',
+    },
 	}
 }
 export default graphqlHTTP(server)
