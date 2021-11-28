@@ -1,26 +1,31 @@
 import { subscribe } from 'graphql'
 import { getCollection, getDocument } from 'server/firestore'
-import { QueryType } from 'server/types/firestore'
+import { QueryType, ElapsedTime } from 'server/types/firestore'
 import makeDateString from 'actions/makeDateString'
 import sleep from 'actions/sleep'
+import type { Request } from 'pages/api/graphql'
+import type { GarageEntriesArgs } from 'server/types/args'
 
-export async function* garageStateGenerator(){
-	let i = 0
-	while(i < 20){
-		await sleep(500)
-		yield { state: true }
-		i += 1
+export async function garageStateResolver(parent: undefined, args: object, request: Request){
+	try{
+		const data = await getDocument('garage', 'status')
+		console.log(data)
+		if(!data){
+			throw new Error('data is undefined')
+		}
+		if(typeof data !== 'object'){
+			throw new Error('data is not an object')
+		}
+		if(!('lastUpdated' in data)){
+			throw new Error('no lastUpated property in data')
+		}
+		return data 
+	}catch(err){
+		return err
 	}
 }
 
-export async function garageStateResolver(parent, args, request){
-	console.log('garage', 'status')
-	const data = await getDocument('garage', 'status')
-	console.log(data)
-	return data 
-}
-
-export async function garageEntries(parent, args, request){
+export async function garageEntries(parent: undefined, args: GarageEntriesArgs, request: Request){
 	const queryArray: QueryType[] = [
 		{ orderBy: 'desc', field: 'uid' }
 	]
@@ -29,7 +34,7 @@ export async function garageEntries(parent, args, request){
 			value: args.limit,
 			limit: true
 		})
-	}else if('lastKnownTimeStamp' in args){
+	}else if('lastKnownTimeStamp' in args && typeof args.lastKnownTimeStamp === 'number'){
 		queryArray.unshift({
 			field: 'uid',
 			opperator: '>=',

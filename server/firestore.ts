@@ -1,5 +1,12 @@
 import admin from 'firebase-admin'
-import { QueryType, CollectionType, DocumentReference } from './types/firestore'
+import { 
+	CollectionType, 
+	DocumentReference,
+	DocumentSnapshot, 
+	ElapsedTime,
+	QueryType, 
+} from './types/firestore'
+import parseElapsedTime from 'actions/parseElapsedTime'
 import privateKeyParser from './services/privateKeyParser'
 if (!admin.apps.length) {
 	const firebaseCreds: object = { 
@@ -17,23 +24,23 @@ if (!admin.apps.length) {
 	admin.app()
 }
 const db = admin.firestore()
-
-export async function getDocumentSnapshot(collectionName: string, documentName: string){
-	try{
-		const observer = doc.onSnapshot(docSnapshot => {
-			console.log(`Received doc snapshot: ${docSnapshot}`);
-		}, err => {
-			console.log(`Encountered error: ${err}`);
-		});
-	}catch(err){
-	}
-}
-
 export async function getDocument(collectionName: string, documentName: string){
 	try{
-		const doc: DocumentReference = await db.collection(collectionName).doc(documentName).get()
-		const lastUpdated = doc._updateTime
-		return { ...doc.data(), lastUpdated }
+		const doc: DocumentSnapshot = await db.collection(collectionName).doc(documentName).get()
+		console.log(doc.exists)
+		if(!doc.exists || doc === undefined){
+			throw new Error('does not exist')
+		}
+		if(!doc.updateTime){
+			throw new Error('updatedTime does not exist')
+		}
+		const lastUpdated = doc.updateTime.seconds
+		const data = doc.data()
+		if(data === undefined){
+			throw new Error('data is undefined')
+		}
+		data.lastUpdated = parseElapsedTime(lastUpdated)
+		return data 
 	}catch(err){
 		console.log(err)
 		return err

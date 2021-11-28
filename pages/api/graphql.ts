@@ -60,16 +60,10 @@ interface OptionsData {
 	typeResolver?: GraphQLTypeResolver<unknown, unknown>;
 }
 
-const PORT = 4000;
-const subscriptionEndpoint = `ws://localhost:${PORT}/subscriptions`;
-
 async function server(req: Request, res: Response, graphQLParams: GraphQLParams | undefined){
 	return {
 		schema: Schema,
-		graphiql: {
-      subscriptionEndpoint,
-      websocketClient: 'v1',
-    },
+		graphiql: true,
 	}
 }
 export default graphqlHTTP(server)
