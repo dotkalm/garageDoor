@@ -7,7 +7,7 @@ import {
 } from 'graphql'
 
 import { ActivityType, GarageState } from './types'
-import { 
+import {
 	garageEntries, 
 	garageStateResolver, 
 	lazyResolver 

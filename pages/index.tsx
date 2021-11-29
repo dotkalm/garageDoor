@@ -11,8 +11,8 @@ import {
 import { GarageLogResponse, GarageLogProps } from 'client/types'
 import GarageDoor from 'components/GarageDoor'
 import Entries from 'components/Entries'
+import { indexResolver } from 'server/staticPropGetter'
 
-const url = `${process.env.GRAPHQL_HOST}${process.env.GRAPHQL_API}`
 
 const Home = (props: GarageLogProps) => {
 	const [ entries, setEntries ] = useState(props?.garageLog || [])
@@ -96,20 +96,10 @@ const Home = (props: GarageLogProps) => {
 	)
 }
 export async function getStaticProps(){
-	const variables = { limit: 30 } 
-	const response = await postRequest(url, GARAGE_LOG_QUERY_TO_LIMIT, variables)
-	const data: GarageLogResponse = response.data 
-	if(!data || response.errors){
-		return { 
-			props: { 
-				garageLog: [],
-			}
-		}
+	const garageLog = await indexResolver()
+	if(!garageLog){
+		return { props: { garageLog: [] } }
 	}
-	return {
-		props: {
-			garageLog: data.garageLog
-		}
-	}
+	return { props: { garageLog } }
 }
 export default Home
