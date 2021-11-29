@@ -13,6 +13,14 @@ export const GARAGE_LOG_QUERY = `query
 	}
 	${DAILY_LOG_FRAGMENT}
 `
+export const LAZY_GARAGE_LOG = `query 
+	lazyEntries($limit: Float $lastUid: Float){
+		lazyLoaderLogs(lastUid: $lastUid limit: $limit){
+			...DailyLogFragment
+		}
+	}
+	${DAILY_LOG_FRAGMENT}
+`
 export const GARAGE_LOG_QUERY_TO_LIMIT = `query 
 	getEntries($limit: Float){
 		garageLog(limit: $limit){

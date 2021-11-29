@@ -7,7 +7,11 @@ import {
 } from 'graphql'
 
 import { ActivityType, GarageState } from './types'
-import { garageEntries, garageStateResolver } from './resolvers'
+import { 
+	garageEntries, 
+	garageStateResolver, 
+	lazyResolver 
+} from './resolvers'
 import Subscription from './subscription'
 
 const RootQuery = new GraphQLObjectType({
@@ -26,6 +30,15 @@ const RootQuery = new GraphQLObjectType({
 			type: GarageState,
 			description: 'garage state',
 			resolve: garageStateResolver,
+		},
+		lazyLoaderLogs: {
+			type: new GraphQLList(ActivityType),
+			description: 'lazy garage loader',
+			args: {
+				lastUid: { type: GraphQLFloat },
+				limit: { type: GraphQLFloat } 
+			},
+			resolve: lazyResolver
 		}
 	},
 })
