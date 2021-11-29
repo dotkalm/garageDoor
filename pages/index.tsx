@@ -32,7 +32,6 @@ const Home = (props: GarageLogProps) => {
 		startPolling, 
 		fetchMore,
 	} = response
-	console.log(loading)
 	useEffect(() => {
 		if(data?.lazyLoaderLogs && entries.length > 0){
 			const { lazyLoaderLogs } = data
@@ -97,7 +96,7 @@ const Home = (props: GarageLogProps) => {
 	)
 }
 export async function getStaticProps(){
-	const variables = { "limit": 3 } 
+	const variables = { limit: 30 } 
 	const response = await postRequest(url, GARAGE_LOG_QUERY_TO_LIMIT, variables)
 	const data: GarageLogResponse = response.data 
 	if(!data || response.errors){
