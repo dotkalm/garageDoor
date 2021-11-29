@@ -7,7 +7,7 @@ import TimeColumn from '../TimeColumn'
 export default function Activity({ action, timestamp }:EntriesType){
 	return(
 		<div className={styles.activity}>
-			<GarageImg action={action}/>
+			<GarageImg action={action} timestamp={timestamp}/>
 			<ActivityColumn action={action} /> 
 			<TimeColumn timestamp={timestamp} />
 		</div>

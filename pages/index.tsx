@@ -28,8 +28,6 @@ export async function getStaticProps(){
 	const variables = { "limit": 3 } 
 	const response = await postRequest(url, GARAGE_LOG_QUERY_TO_LIMIT, variables)
 	const data: GarageLogResponse = response.data 
-	const lastUpdatedState = await postRequest(url, GARAGE_STATE)
-	console.log(lastUpdatedState, '<---- lastUpdatedState')
 	if(!data || response.errors){
 		return { 
 			props: { 

@@ -20,3 +20,14 @@ export type GarageLogResponse = {
 export type GarageLogProps = { 
 	garageLog: GarageLogType[] 
 }
+export type TimeFieldType = {
+	seconds: number
+	minutes: number
+	hours: number
+	days: number
+}
+export type GarageStateType = {
+	open: boolean
+	lastUpdated: number
+	lastUpdatedObject: TimeFieldType
+}

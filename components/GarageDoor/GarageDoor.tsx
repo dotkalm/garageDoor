@@ -3,12 +3,12 @@ import { useQuery, gql } from '@apollo/client'
 import styles from './GarageDoor.module.css'
 import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
+import type { GarageStateType } from 'client/types'
 
-
-export default function GarageDoor({garageState}){
+export default function GarageDoor(){
 	const [ open, setOpen ] = useState(false)
 	const [ active, setActive ] = useState(false)
-	const response = useQuery<{limit: number}>(gql`${GARAGE_STATE}`, {
+	const response = useQuery(gql`${GARAGE_STATE}`, {
 		fetchPolicy: 'network-only',
 	})
 	const { 
@@ -26,16 +26,20 @@ export default function GarageDoor({garageState}){
 				if(previousData.garageState.open !== garageState.open){
 					setOpen(garageState.open)
 					setActive(true)
-					setTimeout(() => setActive(false), 1000 * 12)
 				}
 			}else{
 				if(garageState.open !== open){
 					setOpen(garageState.open)
 				}
 			}
+			const { lastUpdatedObject } = garageState
+			const { seconds, minutes, hours, days } = lastUpdatedObject
+			const timeArray = [ minutes, hours, days ] 
+			if(timeArray.every(unit => unit === 0) && seconds > 12){
+				setActive(false)
+			}
 		}
-	}, [ data, previousData, loading ])
-	console.log(response, open)
+	}, [ active, data, previousData, loading, open ])
 	startPolling(500)
 	return(
 		<div className={styles.garageDoor}>
