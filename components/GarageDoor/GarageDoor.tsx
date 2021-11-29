@@ -19,6 +19,7 @@ export default function GarageDoor(props: GarageDoorPropsType){
 		refetch, 
 		startPolling, 
 	} = response
+	const { setLastUpdated, lastUpdated } = props
 	useEffect(() => {
 		if(data?.garageState){
 			const { garageState } = data
@@ -33,8 +34,8 @@ export default function GarageDoor(props: GarageDoorPropsType){
 				}
 			}
 			const { lastUpdatedObject } = garageState
-			if(garageState.lastUpdated !== props.lastUpdated){
-				props.setLastUpdated(garageState.lastUpdated)
+			if(garageState.lastUpdated !== lastUpdated){
+				setLastUpdated(garageState.lastUpdated)
 			}
 			const { seconds, minutes, hours, days } = lastUpdatedObject
 			const timeArray = [ minutes, hours, days ] 
@@ -42,7 +43,7 @@ export default function GarageDoor(props: GarageDoorPropsType){
 				setActive(false)
 			}
 		}
-	}, [ active, data, previousData, loading, open ])
+	}, [ active, data, previousData, loading, open, setLastUpdated, lastUpdated ])
 	startPolling(500)
 	return(
 		<div className={styles.garageDoor}>

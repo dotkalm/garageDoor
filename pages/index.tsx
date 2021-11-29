@@ -4,7 +4,7 @@ import Head from 'next/head'
 import postRequest from 'actions/postRequest'
 import styles from 'styles/Home.module.css'
 import { LAZY_GARAGE_LOG, GARAGE_LOG_QUERY } from 'client/queries'
-import { GarageLogResponse, GarageLogProps } from 'client/types'
+import { GarageLogResponse, GarageLogProps, GarageLogType } from 'client/types'
 import GarageDoor from 'components/GarageDoor'
 import Entries from 'components/Entries'
 import { indexResolver } from 'server/staticPropGetter'
@@ -29,7 +29,7 @@ const Home = (props: GarageLogProps) => {
 		}
 	})
 	useEffect(() => {
-		const previousStatesMatch = (one: object[], two: object[]): boolean => {
+		function previousStatesMatch<T>(one: T, two: T): boolean {
 			const current = JSON.stringify(one)
 			const previous = JSON.stringify(two)
 			return current === previous
@@ -39,9 +39,11 @@ const Home = (props: GarageLogProps) => {
 			const copiedEntries = [...entries]
 			const previousFirst = copiedEntries.shift()
 			const currentLast = garageLog[garageLog.length -1]
-			const diff: boolean = previousStatesMatch(previousFirst, currentLast)
-			if(!diff){
-				setEntries([...garageLog, ...copiedEntries])
+			if(previousFirst !== undefined && currentLast !== undefined){
+				const diff: boolean = previousStatesMatch<GarageLogType>(previousFirst, currentLast)
+				if(!diff){
+					setEntries([...garageLog, ...copiedEntries])
+				}
 			}
 		}
 	},[ entries, mostRecentActivity ])
@@ -55,7 +57,7 @@ const Home = (props: GarageLogProps) => {
 				mostRecentActivity.refetch()
 			}
 		}
-	},[ entries, lastUpdated ])
+	},[ entries, lastUpdated, mostRecentActivity ])
 
 	useEffect(() => {
 		if(data?.lazyLoaderLogs && entries.length > 0){
