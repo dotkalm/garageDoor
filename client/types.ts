@@ -18,7 +18,8 @@ export type GarageLogResponse = {
 	garageLog: GarageLogType[]
 }
 export type GarageLogProps = { 
-	garageLog: GarageLogType[] 
+	garageLog: GarageLogType[]
+	loading: boolean
 }
 export type TimeFieldType = {
 	seconds: number

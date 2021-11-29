@@ -2,4 +2,12 @@
 	display: block;
 	animation-duration: 1s;
 	animation-name: slidein;
+	padding-bottom: 5em;
+}
+.spinner{
+	margin: 4em 0 0 2em;
+	display: grid;
+	width: auto;
+	align-content: center;
+	justify-items: center;
 }
