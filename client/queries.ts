@@ -6,8 +6,8 @@ export const DAILY_LOG_FRAGMENT = `fragment DailyLogFragment on DailyLogEntry {
   }
 }`
 export const GARAGE_LOG_QUERY = `query 
-	getEntries($lastKnownTimestamp :Float){
-		garageLog(lastKnownTimeStamp: $lastKnownTimestamp){
+	getEntries($lastKnownTimeStamp :Float $limit :Float){
+		garageLog(lastKnownTimeStamp: $lastKnownTimeStamp limit: $limit){
 			...DailyLogFragment
 		}
 	}

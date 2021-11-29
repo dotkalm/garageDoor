@@ -3,9 +3,9 @@ import { useQuery, gql } from '@apollo/client'
 import styles from './GarageDoor.module.css'
 import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
-import type { GarageStateType } from 'client/types'
+import type { GarageStateType, GarageDoorPropsType } from 'client/types'
 
-export default function GarageDoor(){
+export default function GarageDoor(props: GarageDoorPropsType){
 	const [ open, setOpen ] = useState(false)
 	const [ active, setActive ] = useState(false)
 	const response = useQuery(gql`${GARAGE_STATE}`, {
@@ -33,6 +33,9 @@ export default function GarageDoor(){
 				}
 			}
 			const { lastUpdatedObject } = garageState
+			if(garageState.lastUpdated !== props.lastUpdated){
+				props.setLastUpdated(garageState.lastUpdated)
+			}
 			const { seconds, minutes, hours, days } = lastUpdatedObject
 			const timeArray = [ minutes, hours, days ] 
 			if(timeArray.every(unit => unit === 0) && seconds > 12){

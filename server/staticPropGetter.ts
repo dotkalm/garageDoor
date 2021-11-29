@@ -45,7 +45,10 @@ export async function indexResolver(){
 					arr.push(entryObject)
 				}
 			}
-			return { uid, entries: arr } 
+			return { 
+				uid, 
+				entries: arr.sort((x,y) => x.timestamp > y.timestamp ? -1 : 1) 
+			}
 		})
 		return entries 
 	}catch(err){

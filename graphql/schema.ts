@@ -17,7 +17,7 @@ import Subscription from './subscription'
 const RootQuery = new GraphQLObjectType({
 	name: 'Query',
 	fields:{
-		garageLog: { 
+		garageLog: {
 			type: new GraphQLList(ActivityType),
 			description: 'garage log',
 			args: { 

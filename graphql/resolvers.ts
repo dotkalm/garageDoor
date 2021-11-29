@@ -36,22 +36,20 @@ export async function garageEntries(parent: undefined, args: GarageEntriesArgs, 
 	const queryArray: QueryType[] = [
 		{ orderBy: 'desc', field: 'uid' }
 	]
-	if('limit' in args){
-		queryArray.unshift({
-			value: args.limit,
-			limit: true
-		})
-	}else if('lastKnownTimeStamp' in args && typeof args.lastKnownTimeStamp === 'number'){
-		queryArray.unshift({
-			field: 'uid',
-			opperator: '>=',
-			value: makeDateString(args.lastKnownTimeStamp),
-		})
-	}else{
-		queryArray.unshift({
-			value: 3,
-			limit: true
-		})
+	for(const key in args){
+		if('limit' === key){
+			queryArray.unshift({
+				value: args.limit,
+				limit: true
+			})
+		}
+		if(key === 'lastKnownTimeStamp' && typeof args.lastKnownTimeStamp === 'number'){
+			const valueToQuery = makeDateString(args.lastKnownTimeStamp)
+			queryArray.unshift({ field: 'uid', opperator: '>=', value: valueToQuery, })
+		}
+	}
+	if(queryArray.length === 1){
+		queryArray.unshift({ value: 3, limit: true })
 	}
 	return getCollection('activity', queryArray)
 }

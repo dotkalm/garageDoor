@@ -22,6 +22,8 @@ export default function GarageImg({ action, timestamp }: EntriesType){
 			<Image 
 				alt="closed" 
 				height={dim}
+				layout='responsive'
+				priority={isToday}
 				src="/garageClosed.svg"
 				width={dim} 
 			/>

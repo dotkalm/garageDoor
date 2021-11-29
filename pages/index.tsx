@@ -3,11 +3,7 @@ import { useQuery, gql } from '@apollo/client'
 import Head from 'next/head'
 import postRequest from 'actions/postRequest'
 import styles from 'styles/Home.module.css'
-import { 
-	GARAGE_LOG_QUERY_TO_LIMIT, 
-	GARAGE_STATE, 
-	LAZY_GARAGE_LOG 
-} from 'client/queries'
+import { LAZY_GARAGE_LOG, GARAGE_LOG_QUERY } from 'client/queries'
 import { GarageLogResponse, GarageLogProps } from 'client/types'
 import GarageDoor from 'components/GarageDoor'
 import Entries from 'components/Entries'
@@ -19,19 +15,49 @@ const Home = (props: GarageLogProps) => {
 	const [ queryVariables, setQueryVariables ] = useState({
 		lastUid: 1, limit: 4
 	})
+	const [ lastUpdated, setLastUpdated ] = useState(0)
 	const response = useQuery(gql`${LAZY_GARAGE_LOG}`, {
 		fetchPolicy: 'network-only',
 		variables: queryVariables
 	})
-	const { 
-		data, 
-		error, 
-		loading, 
-		previousData,
-		refetch, 
-		startPolling, 
-		fetchMore,
-	} = response
+	const { data, error, loading, fetchMore } = response
+	const mostRecentActivity = useQuery(gql`${GARAGE_LOG_QUERY}`, {
+		fetchPolicy: 'network-only',
+		variables: { 
+			lastKnownTimeStamp: Math.floor(lastUpdated * 1000),
+			limit: 4
+		}
+	})
+	useEffect(() => {
+		const previousStatesMatch = (one, two) => {
+			const current = JSON.stringify(one)
+			const previous = JSON.stringify(two)
+			console.log(current === previous)
+			return current === previous
+		}
+		if(!mostRecentActivity.loading && mostRecentActivity.data){
+				const { garageLog } = mostRecentActivity.data
+				const copiedEntries = [...entries]
+				const previousFirst = copiedEntries.shift()
+				const currentLast = garageLog[garageLog.length -1]
+				const diff = previousStatesMatch(previousFirst, currentLast) 
+				console.log(previousFirst, currentLast, diff)
+			if(!diff){
+				setEntries([...garageLog, ...copiedEntries])
+			}
+		}
+	},[ entries, mostRecentActivity ])
+	useEffect(() => {
+		const [ firstDay ] = entries
+		if(firstDay && firstDay.entries){
+			const [ { timestamp } ] = firstDay.entries
+			const roundedSeconds = Math.round(timestamp / 1000)
+			if(Math.abs(roundedSeconds - lastUpdated) > 10){
+				setLastUpdated(roundedSeconds)
+				mostRecentActivity.refetch()
+			}
+		}
+	},[ entries, lastUpdated ])
 
 	useEffect(() => {
 		if(data?.lazyLoaderLogs && entries.length > 0){
@@ -44,8 +70,8 @@ const Home = (props: GarageLogProps) => {
 				}
 			}
 		}
-
 	}, [ data, entries ])
+
 	useEffect(() => {
 		function getUiSizes(){
 			const clientHeight = window.document?.body?.clientHeight || 0
@@ -81,7 +107,9 @@ const Home = (props: GarageLogProps) => {
 				window.removeEventListener('scroll', scrollHandler);
       };
 		}
-	}, [entries, queryVariables, fetchMore])
+	}, [ entries, queryVariables, fetchMore ])
+	
+
 	return (
 		<div className={styles.container}>
 			<Head>
@@ -90,7 +118,10 @@ const Home = (props: GarageLogProps) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main className={styles.main}>
-				<GarageDoor/>
+				<GarageDoor 
+					lastUpdated={lastUpdated} 
+					setLastUpdated={setLastUpdated}
+				/>
 				<Entries garageLog={entries} loading={loading}/>
 			</main>
 		</div>
