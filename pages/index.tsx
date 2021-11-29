@@ -28,7 +28,7 @@ const Home = (props: GarageLogProps) => {
 		}
 	})
 	useEffect(() => {
-		function previousStatesMatch<T>(one: T, two: T): boolean {
+		function previousStatesMatch(one: GarageLogType, two: GarageLogType): boolean {
 			const current = one.entries[0].timestamp
 			const previous = two.entries[0].timestamp
 			return current === previous
@@ -39,7 +39,7 @@ const Home = (props: GarageLogProps) => {
 			const previousFirst = copiedEntries.shift()
 			const currentFirst = garageLog[0]
 			if(previousFirst !== undefined && currentFirst !== undefined){
-				const diff: boolean = previousStatesMatch<GarageLogType>(previousFirst, currentFirst)
+				const diff: boolean = previousStatesMatch(previousFirst, currentFirst)
 				console.log(diff)
 				if(!diff){
 					setEntries([...garageLog, ...copiedEntries])
