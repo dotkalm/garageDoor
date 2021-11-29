@@ -25,39 +25,28 @@ const Home = (props: GarageLogProps) => {
 		fetchPolicy: 'network-only',
 		variables: { 
 			lastKnownTimeStamp: Math.floor(lastUpdated * 1000),
-			limit: 4
 		}
 	})
 	useEffect(() => {
 		function previousStatesMatch<T>(one: T, two: T): boolean {
-			const current = JSON.stringify(one)
-			const previous = JSON.stringify(two)
+			const current = one.entries[0].timestamp
+			const previous = two.entries[0].timestamp
 			return current === previous
 		}
 		if(!mostRecentActivity.loading && mostRecentActivity.data){
 			const { garageLog } = mostRecentActivity.data
 			const copiedEntries = [...entries]
 			const previousFirst = copiedEntries.shift()
-			const currentLast = garageLog[garageLog.length -1]
-			if(previousFirst !== undefined && currentLast !== undefined){
-				const diff: boolean = previousStatesMatch<GarageLogType>(previousFirst, currentLast)
+			const currentFirst = garageLog[0]
+			if(previousFirst !== undefined && currentFirst !== undefined){
+				const diff: boolean = previousStatesMatch<GarageLogType>(previousFirst, currentFirst)
+				console.log(diff)
 				if(!diff){
 					setEntries([...garageLog, ...copiedEntries])
 				}
 			}
 		}
 	},[ entries, mostRecentActivity ])
-	useEffect(() => {
-		const [ firstDay ] = entries
-		if(firstDay && firstDay.entries){
-			const [ { timestamp } ] = firstDay.entries
-			const roundedSeconds = Math.round(timestamp / 1000)
-			if(Math.abs(roundedSeconds - lastUpdated) > 10){
-				setLastUpdated(roundedSeconds)
-				mostRecentActivity.refetch()
-			}
-		}
-	},[ entries, lastUpdated, mostRecentActivity ])
 
 	useEffect(() => {
 		if(data?.lazyLoaderLogs && entries.length > 0){
