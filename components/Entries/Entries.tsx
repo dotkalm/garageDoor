@@ -11,7 +11,6 @@ export default function Entries({ garageLog, loading }: GarageLogProps){
 			{loading && 
 				<div className={styles.spinner}>
 					<MDSpinner
-						borderColor={'black'}
 						borderSize={10}
 						color1={'#8ede97'}
 						color2={'lightblue'}
