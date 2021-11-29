@@ -40,7 +40,6 @@ const Home = (props: GarageLogProps) => {
 			const currentFirst = garageLog[0]
 			if(previousFirst !== undefined && currentFirst !== undefined){
 				const diff: boolean = previousStatesMatch(previousFirst, currentFirst)
-				console.log(diff)
 				if(!diff){
 					setEntries([...garageLog, ...copiedEntries])
 				}

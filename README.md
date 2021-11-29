@@ -1,34 +1,41 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## GarageDoor.live
 
-## Getting Started
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
+```
+garage door live 2.0 using typescript
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [GarageDoor.live](https://garagedoor.live) with your browser to see activity.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## Improvements from version 1.0
+- Typescript implementation
+- Implements Apollo, ApolloProvider, useQuery.
+- Client side snapshot listener replaced with Apollo polling to trigger garage animation.
+- lazy loads from scroll event listener.
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## static builds 
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+DB updates and CI Builds triggered using webhook connected to garage door opener. 
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## IN ACTION 
+![video](https://storage.googleapis.com/joelholmbergdotcom.appspot.com/images/RPReplay_Final1630955232.mov)
 
-## Deploy on Vercel
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Built using
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1.  Nextjs 
+2. 	Apollo 
+3. 	Graphql
+4. 	Express-Graphql
+5. 	Firestore
+
+![Screenshot while closed ](https://00f74ba44b4ee57ca7bed49b8251b429f06291e34d-apidata.googleusercontent.com/download/storage/v1/b/joelholmbergdotcom.appspot.com/o/images%2Fgaragedoorlive.png?jk=AFshE3XHJBK3YZISZONpAoz7AK9L0GNd0_R_AwdqV_0WbmL0uVbCkYFMEfpsXYRd7elMsZTYN0T1URXoHmnhWkegMWnbapoDv0kiByfnTbDrkCnoAUlOlsfTfUfxrexefdedJ8NgIAG7bbXnEvUUxDlaEluLD16c8ZcnHrlZTz1sOE5iru1on3EhzVbHe20QCaqF7vKvN5eFUDMGq2yiYVyhzulO7y0KPUkN_v104HQfQgxkSnoTYXUufP2Q40wfLnUpn73prC9aSjJYFO7P0XxRRGPpmyPx_yoOTCqO-Qu_NJ68rs3nqiJkYaXcgCcuOMk_YnqlTcsG_gPAp-FnwFqjzgYXHdjBMjhyHV2NeheWRtBI6lc598ANYLvEOGxKdLcPl7vZFxDg2TgzcjYZNqNbg2CxlmvfUwlQR_oiYELiSWuMcBVRLmyKMQyhGUW8apEg6HcJna3799eyzmQ5jtVVKJBCTO6CRxkXHXyToNoPh6S5Q8JcP5vefrMJEznn3axemtN1EVVXmpccQ4UKQRpJMbrasDizHdkJvDdKd51WNAi4JZbKx6xPJ2kD6qyEbwjXnxaZtfo9Iazp4BOS2MZEooyn-gpVYyYvIAwirzdhcW9E7YvbQNnFhmXRn8c5PQnnpk-gNZGksOz5SiihSazcY0UxeUA6rpYtRTORvFzrL3ETiGGHODQJqp1-Up2X1WE59EgTbvrsih0EbejMg-DfU1tk-M3_KViZLXYEaVnQK4Auv1xydnhxDDhZG7S_hoAmyArW9obFJJNiDGjZGNR3RGogQjE8cYJ5CdX7fpCWZtJ_vvN2rzvsq2nsHrTGF-PxYV8qilIQjF7cRQ3zuuKfWWccDAXnP0zyH29gvZ5gBsLGxLXwSf3qpw59lB867TPYrjzw2oYc2-QzMZewthj3O7COb0E1dgi-YTMZIKUQnbS91pmMRbX0f2c72-NmKPsOt4oGF4aoYC1Tcy2uU5cV6cd2xCdwGTOhA97W5sPSQo4&isca=1)
+
+
+
+	
+	
+	
