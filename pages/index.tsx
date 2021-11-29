@@ -16,7 +16,6 @@ const url = `${process.env.GRAPHQL_HOST}${process.env.GRAPHQL_API}`
 
 const Home = (props: GarageLogProps) => {
 	const [ entries, setEntries ] = useState(props?.garageLog || [])
-	const [ inRange, setInRange ] = useState(false)
 	const [ queryVariables, setQueryVariables ] = useState({
 		lastUid: 1, limit: 4
 	})
@@ -33,6 +32,7 @@ const Home = (props: GarageLogProps) => {
 		startPolling, 
 		fetchMore,
 	} = response
+	console.log(loading)
 	useEffect(() => {
 		if(data?.lazyLoaderLogs && entries.length > 0){
 			const { lazyLoaderLogs } = data
@@ -42,28 +42,36 @@ const Home = (props: GarageLogProps) => {
 				if(!found){
 					setEntries([...entries, ...lazyLoaderLogs])
 				}
-				console.log(found)
 			}
 		}
 
 	}, [ data, entries ])
 	useEffect(() => {
-		function scrollHandler(){
+		function getUiSizes(){
 			const clientHeight = window.document?.body?.clientHeight || 0
 			const innerHeight = window.innerHeight || 0
 			const yOffset = window.pageYOffset || 0
 			const totalHeight = clientHeight - innerHeight
 			const gap = totalHeight - yOffset
-			if(gap < innerHeight && !inRange){
+			return { gap, totalHeight, yOffset, innerHeight, clientHeight }
+		}
+		function scrollHandler(){
+			const { 
+				clientHeight,
+				gap, 
+				innerHeight, 
+				totalHeight, 
+				yOffset, 
+			} = getUiSizes()
+			if(gap < innerHeight){
 				const { uid } = entries[entries.length -1]
-				setInRange(true)
 				setQueryVariables({
 					lastUid: uid,
 					limit: 4,
 				})
 				response.fetchMore({
 					variables: queryVariables,
-				})
+				}).then(() => getUiSizes())
 			}
 		}
 		if(window){
@@ -73,7 +81,7 @@ const Home = (props: GarageLogProps) => {
 				window.removeEventListener('scroll', scrollHandler);
       };
 		}
-	}, [entries, inRange, queryVariables])
+	}, [entries, queryVariables])
 	return (
 		<div className={styles.container}>
 			<Head>
@@ -83,7 +91,7 @@ const Home = (props: GarageLogProps) => {
 			</Head>
 			<main className={styles.main}>
 				<GarageDoor/>
-				<Entries garageLog={entries} />
+				<Entries garageLog={entries} loading={loading}/>
 			</main>
 		</div>
 	)
