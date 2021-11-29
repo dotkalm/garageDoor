@@ -1,3 +1,5 @@
+const months = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ]
+
 export default function isTodayOrYesterdayOtherwise(timestamp: number): string{ 
 	const yesterdayAsLocalString = new Date(Date.now() - ((60 * 60) * 24) * 1000)
 		.toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' })
@@ -11,10 +13,10 @@ export default function isTodayOrYesterdayOtherwise(timestamp: number): string{
 	if(yesterdayAsLocalString === entryAsLocalString){
 		return 'Yesterday'
 	}
-	let asLocalString = new Date(Number(timestamp)).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' }).split(' ')
-	asLocalString.splice(0,1)
+	let asLocalString = new Date(Number(timestamp)).toLocaleDateString('en-US', { timeZone: 'America/Los_Angeles' }).split('/')
+	console.log(asLocalString)
 	const [ month, day, year ] = asLocalString
 
-	return `${month} ${day}, ${year}`
+	return `${months[month-1]} ${day}, ${year}`
 }
 
