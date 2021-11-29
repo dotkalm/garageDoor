@@ -38,7 +38,8 @@ export async function getDocument(collectionName: string, documentName: string){
 		if(data === undefined){
 			throw new Error('data is undefined')
 		}
-		data.lastUpdated = parseElapsedTime(lastUpdated)
+		data.lastUpdated = lastUpdated
+		data.lastUpdatedObject = parseElapsedTime(lastUpdated)
 		return data 
 	}catch(err){
 		console.log(err)

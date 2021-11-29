@@ -5,15 +5,27 @@ const {
 	GraphQLObjectType,
 	GraphQLNonNull,
 	GraphQLFloat,
-	GraphQLBoolean
+	GraphQLBoolean,
+	GraphQLInt,
 } = graphql
 
+export const TimeFields = new GraphQLObjectType({
+	name: 'Timefields',
+	description: 'human readable timestamp since',
+	fields: () => ({
+		seconds: { type: GraphQLInt },
+		minutes: { type: GraphQLInt },
+		hours: { type: GraphQLInt },
+		days: { type: GraphQLInt },
+	})
+})
 export const GarageState = new GraphQLObjectType({
 	name: 'GarageState',
 	description: 'state of garage',
 	fields: () => ({
 		open: { type: GraphQLBoolean },
-		lastUpdated: { type: GraphQLFloat }
+		lastUpdated: { type: GraphQLFloat },
+		lastUpdatedObject: { type: TimeFields }
 	})
 })
 export const EntryType = new GraphQLObjectType({

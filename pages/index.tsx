@@ -2,7 +2,7 @@ import type { NextPage } from 'next'
 import Head from 'next/head'
 import postRequest from 'actions/postRequest'
 import styles from 'styles/Home.module.css'
-import { GARAGE_LOG_QUERY_TO_LIMIT } from 'client/queries'
+import { GARAGE_LOG_QUERY_TO_LIMIT, GARAGE_STATE } from 'client/queries'
 import { GarageLogResponse, GarageLogProps } from 'client/types'
 import GarageDoor from 'components/GarageDoor'
 import Entries from 'components/Entries'
@@ -28,6 +28,8 @@ export async function getStaticProps(){
 	const variables = { "limit": 3 } 
 	const response = await postRequest(url, GARAGE_LOG_QUERY_TO_LIMIT, variables)
 	const data: GarageLogResponse = response.data 
+	const lastUpdatedState = await postRequest(url, GARAGE_STATE)
+	console.log(lastUpdatedState, '<---- lastUpdatedState')
 	if(!data || response.errors){
 		return { 
 			props: { 

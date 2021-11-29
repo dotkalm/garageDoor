@@ -21,3 +21,15 @@ export const GARAGE_LOG_QUERY_TO_LIMIT = `query
 	}
 	${DAILY_LOG_FRAGMENT}
 `
+export const GARAGE_STATE = `{
+  garageState{
+    open
+    lastUpdated
+    lastUpdatedObject{
+      seconds
+      minutes
+      hours
+      days
+    }
+  }
+}`
