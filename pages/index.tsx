@@ -32,6 +32,7 @@ const Home = (props: GarageLogProps) => {
 		startPolling, 
 		fetchMore,
 	} = response
+
 	useEffect(() => {
 		if(data?.lazyLoaderLogs && entries.length > 0){
 			const { lazyLoaderLogs } = data
@@ -68,7 +69,7 @@ const Home = (props: GarageLogProps) => {
 					lastUid: uid,
 					limit: 4,
 				})
-				response.fetchMore({
+				fetchMore({
 					variables: queryVariables,
 				}).then(() => getUiSizes())
 			}
@@ -80,7 +81,7 @@ const Home = (props: GarageLogProps) => {
 				window.removeEventListener('scroll', scrollHandler);
       };
 		}
-	}, [entries, queryVariables])
+	}, [entries, queryVariables, fetchMore])
 	return (
 		<div className={styles.container}>
 			<Head>
