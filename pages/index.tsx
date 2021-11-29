@@ -29,19 +29,17 @@ const Home = (props: GarageLogProps) => {
 		}
 	})
 	useEffect(() => {
-		const previousStatesMatch = (one, two) => {
+		const previousStatesMatch = (one: object[], two: object[]): boolean => {
 			const current = JSON.stringify(one)
 			const previous = JSON.stringify(two)
-			console.log(current === previous)
 			return current === previous
 		}
 		if(!mostRecentActivity.loading && mostRecentActivity.data){
-				const { garageLog } = mostRecentActivity.data
-				const copiedEntries = [...entries]
-				const previousFirst = copiedEntries.shift()
-				const currentLast = garageLog[garageLog.length -1]
-				const diff = previousStatesMatch(previousFirst, currentLast) 
-				console.log(previousFirst, currentLast, diff)
+			const { garageLog } = mostRecentActivity.data
+			const copiedEntries = [...entries]
+			const previousFirst = copiedEntries.shift()
+			const currentLast = garageLog[garageLog.length -1]
+			const diff: boolean = previousStatesMatch(previousFirst, currentLast)
 			if(!diff){
 				setEntries([...garageLog, ...copiedEntries])
 			}
