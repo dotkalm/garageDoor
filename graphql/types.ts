@@ -48,8 +48,8 @@ export const ActivityType = new GraphQLObjectType({
 				for(const timestamp in entries){
 					arr.push({ timestamp, action: entries[timestamp] })
 				}
-				return arr
-			} 
+				return arr.sort((x,y) => x.timestamp > y.timestamp ? -1 : 1)
+			}
 		},
 	})
 })
