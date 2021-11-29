@@ -37,7 +37,7 @@ const Home = (props: GarageLogProps) => {
 			const { lazyLoaderLogs } = data
 			if(lazyLoaderLogs.length > 0){
 				const firstUid = lazyLoaderLogs[0]?.uid
-				const found = entries.find(e => e.uid === firstUid)
+				const found = entries.find(e => e?.uid === firstUid)
 				if(!found){
 					setEntries([...entries, ...lazyLoaderLogs])
 				}
@@ -63,7 +63,7 @@ const Home = (props: GarageLogProps) => {
 				yOffset, 
 			} = getUiSizes()
 			if(gap < innerHeight){
-				const { uid } = entries[entries.length -1]
+				const uid = entries[entries.length -1]?.uid  || 10
 				setQueryVariables({
 					lastUid: uid,
 					limit: 4,
