@@ -3,7 +3,7 @@ import style from './GarageImg.module.css'
 import { EntriesType } from 'client/types'
 import isTodayOrYesterdayOtherwise from 'actions/isTodayOrYesterdayOtherwise'
 
-export default function GarageImg({ action, timestamp }: Pick<EntriesType>){
+export default function GarageImg({ action, timestamp }: EntriesType){
 	const dim = '6'
 	const isToday = isTodayOrYesterdayOtherwise(timestamp) === 'Today'
 	return action === 'OPEN' ? (
