@@ -26,3 +26,7 @@ export type ElapsedTime = {
 	minutes: number
 	seconds: number
 }
+export type CollectionNameTypes = 'activity' | 'garage'
+
+export type UpdateOrMergeType = 'success' | Error
+

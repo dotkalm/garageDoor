@@ -5,9 +5,13 @@ import {
 	DocumentSnapshot, 
 	ElapsedTime,
 	QueryType, 
+	CollectionNameTypes,
+	UpdateOrMergeType,
 } from './types/firestore'
 import parseElapsedTime from 'actions/parseElapsedTime'
 import privateKeyParser from './services/privateKeyParser'
+
+
 if (!admin.apps.length) {
 	const firebaseCreds: object = { 
 		type: process.env.FIREBASE_TYPE,
@@ -24,7 +28,34 @@ if (!admin.apps.length) {
 	admin.app()
 }
 const db = admin.firestore()
-export async function getDocument(collectionName: string, documentName: string){
+
+export async function updateDoc<T>(collectionName: CollectionNameTypes, obj: T, uid: string): Promise<UpdateOrMergeType>{
+	try{
+		await db.collection(collectionName).doc(uid).update(obj)
+		return 'success' 
+	}catch(err){
+		if (err instanceof Error){
+			return err
+		}else{
+			return new Error('uncaught')
+		}
+	}
+}
+
+export async function mergeDocIfExists<T>(collectionName: CollectionNameTypes, obj: T, uid: string): Promise<UpdateOrMergeType>{
+	try{
+		await db.collection(collectionName).doc(uid).set(obj, {merge: true})
+		return 'success' 
+	}catch(err){
+		if (err instanceof Error){
+			return err
+		}else{
+			return new Error('uncaught')
+		}
+	}
+}
+
+export async function getDocument(collectionName: CollectionNameTypes, documentName: string){
 	try{
 		const doc: DocumentSnapshot = await db.collection(collectionName).doc(documentName).get()
 		if(!doc.exists || doc === undefined){
@@ -47,7 +78,7 @@ export async function getDocument(collectionName: string, documentName: string){
 	}
 }
 
-export async function getCollection(collectionName: string, queryArray?: QueryType[]): Promise<Array<object> | Error | undefined> {
+export async function getCollection(collectionName: CollectionNameTypes, queryArray?: QueryType[]): Promise<Array<object> | Error | undefined> {
 	try{
 		let collectionReference: CollectionType = db.collection(collectionName)
 		if(queryArray){
