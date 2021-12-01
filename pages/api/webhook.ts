@@ -13,19 +13,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		const close = process.env.WEBHOOK_CLOSE
 		if(authorization === open){
 			await updateGarage('OPEN')
-			res.json({
-				status: 200,
-				action: 'OPEN'
-			})
-		}
-		if(authorization === close){
+			res.json({ status: 200, action: 'OPEN' })
+		}else if(authorization === close){
 			await updateGarage('CLOSED')
-			res.json({
-				status: 200,
-				action: 'CLOSED'
-			})
+			res.json({ status: 200, action: 'CLOSED' })
+		}else{
+			throw new Error('INVALID CREDS')
 		}
-		throw new Error('NOT OKAY')
 	}catch(err){
 		const errors = []
 		if(err instanceof Error){
@@ -33,10 +27,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
 		}else{
 			errors.push(new Error('uncaught'))
 		}
-		res.json({
-			status: 500,
-			errors,
-		})
+		res.json({ status: 500, errors })
 	}
 }
 
