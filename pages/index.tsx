@@ -14,7 +14,6 @@ import { indexResolver } from 'server/staticPropGetter'
 const Home = (props: GarageLogProps) => {
 
 	const [ entries, setEntries ] = useState(props?.garageLog || [])
-	const [ atBottom, setAtBottom ] = useState(false)
 	const [ queryVariables, setQueryVariables ] = useState({
 		lastUid: 1, limit: 4
 	})
@@ -48,6 +47,7 @@ const Home = (props: GarageLogProps) => {
 			})
 		}
 	}
+
 	ScrollHandler(scrollHandlerCallback)
 	
 

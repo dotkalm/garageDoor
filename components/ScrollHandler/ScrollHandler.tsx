@@ -1,8 +1,6 @@
 import React, { useEffect, useRef } from 'react'
 
-export default function ScrollHandler(
-	callback: () => void, 
-){
+export default function ScrollHandler(callback: () => void){
 	const savedCallback: any = useRef()
 
   useEffect(() => {
@@ -16,16 +14,10 @@ export default function ScrollHandler(
 			const yOffset = window.pageYOffset || 0
 			const totalHeight = clientHeight - innerHeight
 			const gap = totalHeight - yOffset
-			return { gap, totalHeight, yOffset, innerHeight, clientHeight }
+			return { gap, innerHeight }
 		}
 		function scrollHandler(){
-			const { 
-				clientHeight,
-				gap, 
-				innerHeight, 
-				totalHeight, 
-				yOffset, 
-			} = getUiSizes()
+			const { gap, innerHeight } = getUiSizes()
 			if(gap < innerHeight){
 				const sizes = getUiSizes()
 				savedCallback.current()
