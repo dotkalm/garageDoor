@@ -5,7 +5,7 @@ import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
 import type { GarageStateType, GarageDoorPropsType } from 'client/types'
 
-export default function GarageDoor(props: GarageDoorPropsType){
+export default function GarageDoor(){
 	const [ open, setOpen ] = useState(false)
 	const [ active, setActive ] = useState(false)
 	const response = useQuery(gql`${GARAGE_STATE}`, {
@@ -19,7 +19,6 @@ export default function GarageDoor(props: GarageDoorPropsType){
 		refetch, 
 		startPolling, 
 	} = response
-	const { setLastUpdated, lastUpdated } = props
 	useEffect(() => {
 		if(data?.garageState){
 			const { garageState } = data
@@ -34,16 +33,13 @@ export default function GarageDoor(props: GarageDoorPropsType){
 				}
 			}
 			const { lastUpdatedObject } = garageState
-			if(garageState.lastUpdated !== lastUpdated){
-				setLastUpdated(garageState.lastUpdated)
-			}
 			const { seconds, minutes, hours, days } = lastUpdatedObject
 			const timeArray = [ minutes, hours, days ] 
 			if(timeArray.every(unit => unit === 0) && seconds > 12){
 				setActive(false)
 			}
 		}
-	}, [ active, data, previousData, loading, open, setLastUpdated, lastUpdated ])
+	}, [ active, data, previousData, loading, open ])
 	startPolling(500)
 	return(
 		<div className={styles.garageDoor}>
