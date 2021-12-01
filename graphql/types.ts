@@ -25,7 +25,9 @@ export const GarageState = new GraphQLObjectType({
 	fields: () => ({
 		open: { type: GraphQLBoolean },
 		lastUpdated: { type: GraphQLFloat },
-		lastUpdatedObject: { type: TimeFields }
+		lastUpdatedObject: { type: TimeFields },
+		mostRecentMs: { type: GraphQLFloat },
+		mostRecentDay: { type: GraphQLInt },
 	})
 })
 export const EntryType = new GraphQLObjectType({

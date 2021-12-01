@@ -39,5 +39,7 @@ export const GARAGE_STATE = `{
       hours
       days
     }
+		mostRecentDay
+		mostRecentMs
   }
 }`

@@ -11,20 +11,22 @@ export default async function updateGarage(action: UpdateGarageType): Promise<Up
 	try{ 
 		const ms = new Date(Date.now()).valueOf()
 		const dateString: number = makeDateString(ms)
-		const actions: ActivityObjectType = { 
+		const entryDict: ActivityObjectType = { 
 			[ms] : action,
 			uid  : dateString
 		}
-		const uid = String(actions.uid)
-		const timestamp = await mergeDocIfExists('activity', actions, uid)
+		const uid = String(entryDict.uid)
+		const timestamp = await mergeDocIfExists('activity', entryDict, uid)
 
 		if(timestamp instanceof Error){
 			throw timestamp
 		}
-		const updateactions: UpdateStateType = { 
-			open: action === 'OPEN'
+		const stateObject: UpdateStateType = { 
+			open: action === 'OPEN',
+			mostRecentDay: dateString,
+			mostRecentMs: ms
 		} 
-		const current = await updateDoc('garage', updateactions, 'status')
+		const current = await updateDoc('garage', stateObject, 'status')
 		if(current instanceof Error){
 			throw current
 		}

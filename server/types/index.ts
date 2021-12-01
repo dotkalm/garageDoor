@@ -3,9 +3,11 @@ export type Request = IncomingMessage & { url: string };
 export type Response = ServerResponse & { json?: (data: unknown) => void };
 export type UpdateGarageType = 'OPEN' | 'CLOSED'
 export type UpdateStateType = { 
-	open: boolean
+	mostRecentDay  : number
+	mostRecentMs   : number
+	open				   : boolean
 }
 export type ActivityObjectType = {
-	[time: number]: string 
-	uid: number
-} 
+	[time: number] : string 
+	uid						 : number
+}
