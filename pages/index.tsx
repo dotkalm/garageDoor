@@ -15,6 +15,7 @@ import {
 import { contentString } from 'fixtures/meta'
 import { indexResolver } from 'server/staticPropGetter'
 const initialOptions = { fetchPolicy: 'network-only' }
+const initVars = { lastUid: 1, limit: 4 }
 
 const Home = (props: GarageLogProps) => {
 	const [ active, setActive ] = useState(false)
@@ -24,7 +25,7 @@ const Home = (props: GarageLogProps) => {
 	const [ options, setOptions ] = useState(initialOptions)
 	const [ pollMs, setPollMs ] = useState(500)
 	const [ query, setQuery ] = useState(GARAGE_STATE)
-	const [ queryVariables, setQueryVariables ] = useState({ lastUid: 1, limit: 4 })
+	const [ queryVariables, setQueryVariables ] = useState(initVars)
 	const [ timerId, setTimerId ] = useState(0)
 
 	const { 
