@@ -25,6 +25,7 @@ const Home = (props: GarageLogProps) => {
 	const [ pollMs, setPollMs ] = useState(500)
 	const [ query, setQuery ] = useState(GARAGE_STATE)
 	const [ queryVariables, setQueryVariables ] = useState({ lastUid: 1, limit: 4 })
+	const [ timerId, setTimerId ] = useState(0)
 
 	const { 
 		data, 
@@ -33,17 +34,16 @@ const Home = (props: GarageLogProps) => {
 		fetchMore, 
 		startPolling, 
 		stopPolling,
-		refetch
 	} = useQuery(gql`${query}`, options)
 
 
 	const garageState = data?.garageState
 	const lazyLoaderLogs = data?.lazyLoaderLogs
+	const garageLog = data?.garageLog
 	const lazyLoadConditions = lazyLoaderLogs && 
 		entries.length > 0 && 
 		lazyLoaderLogs.length > 0
-
-
+	
 	let time
 
 	pollMs === 500 ? startPolling(500) : stopPolling()
@@ -68,10 +68,19 @@ const Home = (props: GarageLogProps) => {
 		}
 	}
 
+	useEffect(() => { 
+		console.log(query, queryVariables)
+	}, [ query, queryVariables ])
+
+	useEffect(() => {
+		const { ms, yyyymmdd } = last;
+		console.log(timerId)
+		//timerId !== 0  && updateHead()
+	}, [ last, timerId ])
 
 	useEffect(() => {
 		active ? toggleActive() : resetPolling() 
-	}, [ active, last ])
+	}, [ active ])
 
 	useEffect(() => {
 		garageState && newActivityHandler()
@@ -82,8 +91,8 @@ const Home = (props: GarageLogProps) => {
 	}, [ lazyLoadConditions ])
 
 	const updateHead = useCallback(() => {
-		setQuery(GARAGE_LOG_QUERY)
 		setQueryVariables({lastKnownTimeStamp: last.ms})
+		setQuery(GARAGE_LOG_QUERY)
 	}, [ entries, last ])
 
 	const lazyLoad = useCallback(() => {
@@ -94,13 +103,16 @@ const Home = (props: GarageLogProps) => {
 		setOptions(initialOptions)
 	}, [ entries, lazyLoaderLogs ])
 
+
 	const toggleActive = useCallback(() => {
 		pollMs === 500 && clearActive()
-		function clearActive(){
+		async function clearActive(){
 			setPollMs(500*100)
-			time = setTimeout(() => {
+			const uniqueTimer = await setTimeout(() => {
 				setActive(false)
 			}, 1000 * 12)
+			console.log(uniqueTimer)
+			setTimerId(0)
 		}
 	}, [ active, pollMs ]) 
 
@@ -117,7 +129,11 @@ const Home = (props: GarageLogProps) => {
 	}, [ garageState, open ])
 
 	const resetPolling = useCallback(() => {
-		pollMs !== 500 && setPollMs(500) 
+		pollMs !== 500 && pollResetter()
+		function pollResetter(){
+			time = undefined
+			setPollMs(500) 
+		}
 	}, [ pollMs ])
 
 
