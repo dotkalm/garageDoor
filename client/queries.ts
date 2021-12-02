@@ -1,4 +1,5 @@
-export const GARAGE_STATE_FRAGMENT = `fragment GarageStateFragment on GarageState {
+import { gql } from '@apollo/client'
+export const GARAGE_STATE_FRAGMENT = gql`fragment GarageStateFragment on GarageState {
   open
   lastUpdated
   lastUpdatedObject {
@@ -10,14 +11,14 @@ export const GARAGE_STATE_FRAGMENT = `fragment GarageStateFragment on GarageStat
   mostRecentDay
   mostRecentMs
 }`
-export const DAILY_LOG_FRAGMENT = `fragment DailyLogFragment on DailyLogEntry {
+export const DAILY_LOG_FRAGMENT = gql`fragment DailyLogFragment on DailyLogEntry {
   uid
   entries {
     timestamp
     action
   }
 }`
-export const GARAGE_LOG_QUERY = `query 
+export const GARAGE_LOG_QUERY = gql`query 
 	getEntries($lastKnownTimeStamp :Float){
 		garageLog(lastKnownTimeStamp: $lastKnownTimeStamp){
 			...DailyLogFragment
@@ -25,7 +26,7 @@ export const GARAGE_LOG_QUERY = `query
 	}
 	${DAILY_LOG_FRAGMENT}
 `
-export const LAZY_GARAGE_LOG = `query 
+export const LAZY_GARAGE_LOG = gql`query 
 	lazyEntries($limit: Float $lastUid: Float){
 		lazyLoaderLogs(lastUid: $lastUid limit: $limit){
 			...DailyLogFragment
@@ -37,7 +38,7 @@ export const LAZY_GARAGE_LOG = `query
 	${DAILY_LOG_FRAGMENT}
 	${GARAGE_STATE_FRAGMENT}
 `
-export const GARAGE_LOG_QUERY_TO_LIMIT = `query 
+export const GARAGE_LOG_QUERY_TO_LIMIT = gql`query 
 	getEntries($limit: Float){
 		garageLog(limit: $limit){
 			...DailyLogFragment
@@ -45,7 +46,7 @@ export const GARAGE_LOG_QUERY_TO_LIMIT = `query
 	}
 	${DAILY_LOG_FRAGMENT}
 `
-export const GARAGE_STATE = `{
+export const GARAGE_STATE = gql`{
 	garageState{
 		...GarageStateFragment
 	}

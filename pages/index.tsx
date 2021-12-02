@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
+import { useQuery } from '@apollo/client'
 import Head from 'next/head'
 import Entries from 'components/Entries'
 import GarageDoor from 'components/GarageDoor'
@@ -35,7 +35,7 @@ const Home = (props: GarageLogProps) => {
 		fetchMore, 
 		startPolling, 
 		stopPolling,
-	} = useQuery(gql`${query}`, options)
+	} = useQuery(query, options)
 
 	const garageState = data?.garageState
 	const lazyLoaderLogs = data?.lazyLoaderLogs
