@@ -22,7 +22,6 @@ const RootQuery = new GraphQLObjectType({
 			description: 'garage log',
 			args: { 
 				lastKnownTimeStamp: { type: GraphQLFloat },
-				limit: { type: GraphQLFloat }
 			},
 			resolve: garageEntries,
 		},

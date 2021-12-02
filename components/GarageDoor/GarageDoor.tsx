@@ -5,47 +5,27 @@ import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
 import type { GarageStateType, GarageDoorPropsType } from 'client/types'
 
-export default function GarageDoor(){
-	const [ open, setOpen ] = useState(false)
-	const [ active, setActive ] = useState(false)
-	const response = useQuery(gql`${GARAGE_STATE}`, {
-		fetchPolicy: 'network-only',
-	})
-	const { 
-		data, 
-		error, 
-		loading, 
-		previousData,
-		refetch, 
-		startPolling, 
-	} = response
+export default function GarageDoor({ open, active }: GarageDoorPropsType){
+	const [ thisActive, setThisActive ] = useState(active)
+	const [ thisOpen, setThisOpen ] = useState(open)
+
 	useEffect(() => {
-		if(data?.garageState){
-			const { garageState } = data
-			if(previousData){
-				if(previousData.garageState.open !== garageState.open){
-					setOpen(garageState.open)
-					setActive(true)
-				}
-			}else{
-				if(garageState.open !== open){
-					setOpen(garageState.open)
-				}
-			}
-			const { lastUpdatedObject } = garageState
-			const { seconds, minutes, hours, days } = lastUpdatedObject
-			const timeArray = [ minutes, hours, days ] 
-			if(timeArray.every(unit => unit === 0) && seconds > 12){
-				setActive(false)
-			}
+		thisActive !== active && setTimeout(() => {
+			setThisActive(active)
+		}, 500)
+	}, [ active, thisActive ])
+
+	useEffect(() => {
+		if(thisOpen !== open){
+			setTimeout(() => setThisOpen(open), 500)
 		}
-	}, [ active, data, previousData, loading, open ])
-	startPolling(500)
+	}, [open, thisOpen])
+
 	return(
 		<div className={styles.garageDoor}>
-		{!active ? 
-			(!open ? <Closed/> : <Open/>) :
-			(!open ? <Closing/> : <Opening/>) 
+		{!thisActive ? 
+			(!thisOpen ? <Closed/> : <Open/>) :
+			(!thisOpen ? <Closing/> : <Opening/>) 
 		}
 		</div>
 	)

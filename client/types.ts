@@ -2,9 +2,15 @@ export type DayProps = {
 	day: GarageLogType,
 	index: number
 }
+export type LastType = {
+	ms: number 
+	yyyymmdd: number
+}
 export type GarageDoorPropsType = {
-	lastUpdated: number,
-	setLastUpdated: (x: number) => void
+	active: boolean
+	last: LastType 
+	open: boolean
+	setLast: (last: LastType) => void
 }
 export type EntriesType = {
 	timestamp: number,

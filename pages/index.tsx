@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import Head from 'next/head'
 import Entries from 'components/Entries'
@@ -7,36 +7,47 @@ import ScrollHandler from 'components/ScrollHandler'
 import postRequest from 'actions/postRequest'
 import styles from 'styles/Home.module.css'
 import { GarageLogResponse, GarageLogProps, GarageLogType } from 'client/types'
-import { LAZY_GARAGE_LOG, GARAGE_LOG_QUERY } from 'client/queries'
+import { 
+	LAZY_GARAGE_LOG, 
+	GARAGE_LOG_QUERY,
+	GARAGE_STATE,
+} from 'client/queries'
 import { contentString } from 'fixtures/meta'
 import { indexResolver } from 'server/staticPropGetter'
+const initialOptions = { fetchPolicy: 'network-only' }
 
 const Home = (props: GarageLogProps) => {
-
+	const [ active, setActive ] = useState(false)
 	const [ entries, setEntries ] = useState(props?.garageLog || [])
-	const [ queryVariables, setQueryVariables ] = useState({
-		lastUid: 1, limit: 4
-	})
+	const [ last, setLast ] = useState({ ms: 0, yyyymmdd: 0 })
+	const [ open, setOpen ] = useState(false)
+	const [ options, setOptions ] = useState(initialOptions)
+	const [ pollMs, setPollMs ] = useState(500)
+	const [ query, setQuery ] = useState(GARAGE_STATE)
+	const [ queryVariables, setQueryVariables ] = useState({ lastUid: 1, limit: 4 })
 
-	const response = useQuery(gql`${LAZY_GARAGE_LOG}`, {
-		fetchPolicy: 'network-only',
-		variables: queryVariables
-	})
+	const { 
+		data, 
+		error, 
+		loading, 
+		fetchMore, 
+		startPolling, 
+		stopPolling,
+		refetch
+	} = useQuery(gql`${query}`, options)
 
-	const { data, error, loading, fetchMore } = response
 
-	useEffect(() => {
-		if(data?.lazyLoaderLogs && entries.length > 0){
-			const { lazyLoaderLogs } = data
-			if(lazyLoaderLogs.length > 0){
-				const firstUid = lazyLoaderLogs[0]?.uid
-				const found = entries.find(e => e?.uid === firstUid)
-				if(!found){
-					setEntries([...entries, ...lazyLoaderLogs])
-				}
-			}
-		}
-	}, [ data, entries ])
+	const garageState = data?.garageState
+	const lazyLoaderLogs = data?.lazyLoaderLogs
+	const lazyLoadConditions = lazyLoaderLogs && 
+		entries.length > 0 && 
+		lazyLoaderLogs.length > 0
+
+
+	let time
+
+	pollMs === 500 ? startPolling(500) : stopPolling()
+
 
 	function scrollHandlerCallback():void{
 		if(!loading){
@@ -45,11 +56,72 @@ const Home = (props: GarageLogProps) => {
 				lastUid: lastEntry.uid,
 				limit: 4
 			})
+			setOptions({
+				...options,
+				variables: {
+					...queryVariables, 
+					lastUid: lastEntry.uid,
+					limit: 4
+				}
+			})
+			setQuery(LAZY_GARAGE_LOG)
 		}
 	}
 
+
+	useEffect(() => {
+		active ? toggleActive() : resetPolling() 
+	}, [ active, last ])
+
+	useEffect(() => {
+		garageState && newActivityHandler()
+	},  [ garageState, open ])
+
+	useEffect(() => {
+		lazyLoadConditions && lazyLoad()
+	}, [ lazyLoadConditions ])
+
+	const updateHead = useCallback(() => {
+		setQuery(GARAGE_LOG_QUERY)
+		setQueryVariables({lastKnownTimeStamp: last.ms})
+	}, [ entries, last ])
+
+	const lazyLoad = useCallback(() => {
+		const firstLazyUid = lazyLoaderLogs[0]?.uid
+		const found = entries.find(e => e?.uid === firstLazyUid)
+		!found && setEntries([...entries, ...lazyLoaderLogs])
+		setQuery(GARAGE_STATE)
+		setOptions(initialOptions)
+	}, [ entries, lazyLoaderLogs ])
+
+	const toggleActive = useCallback(() => {
+		pollMs === 500 && clearActive()
+		function clearActive(){
+			setPollMs(500*100)
+			time = setTimeout(() => {
+				setActive(false)
+			}, 1000 * 12)
+		}
+	}, [ active, pollMs ]) 
+
+	const newActivityHandler = useCallback(() => {
+		open !== garageState.open && updateAccordingly()
+		function updateAccordingly(){
+			setActive(true)
+			setOpen(garageState.open)
+			setLast({ 
+				ms: garageState.mostRecentMs, 
+				yyyymmdd: garageState.mostRecentDay 
+			})
+		}
+	}, [ garageState, open ])
+
+	const resetPolling = useCallback(() => {
+		pollMs !== 500 && setPollMs(500) 
+	}, [ pollMs ])
+
+
 	ScrollHandler(scrollHandlerCallback)
-	
 
 	return (
 		<div className={styles.container}>
@@ -59,7 +131,12 @@ const Home = (props: GarageLogProps) => {
 				<link rel="icon" href="/favicon.ico" />
 			</Head>
 			<main className={styles.main}>
-				<GarageDoor/>
+				<GarageDoor 
+					active={active}
+					last={last}
+					open={open}
+					setLast={setLast}
+				/>
 				<Entries garageLog={entries} loading={loading}/>
 			</main>
 		</div>
