@@ -69,14 +69,19 @@ const Home = (props: GarageLogProps) => {
 	}
 
 	useEffect(() => { 
-		console.log(query, queryVariables)
 	}, [ query, queryVariables ])
 
 	useEffect(() => {
 		const { ms, yyyymmdd } = last;
-		console.log(timerId)
 		//timerId !== 0  && updateHead()
-	}, [ last, timerId ])
+		if(!active){
+			const [ { uid, entries: firstDayEntries }] = entries
+			const [ { timestamp, action } ] = firstDayEntries
+			if(ms !== timestamp){
+				console.log('TIME TO ROCK', active)
+			}
+		}
+	}, [ last, timerId, active ])
 
 	useEffect(() => {
 		active ? toggleActive() : resetPolling() 
@@ -111,7 +116,6 @@ const Home = (props: GarageLogProps) => {
 			const uniqueTimer = await setTimeout(() => {
 				setActive(false)
 			}, 1000 * 12)
-			console.log(uniqueTimer)
 			setTimerId(0)
 		}
 	}, [ active, pollMs ]) 
