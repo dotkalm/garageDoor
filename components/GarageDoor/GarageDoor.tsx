@@ -11,22 +11,17 @@ export default function GarageDoor({ open, active }: GarageDoorPropsType){
 
 	useEffect(() => {
 		thisActive !== active && setTimeout(() => {
+			setThisOpen(open)
 			setThisActive(active)
 		}, 500)
-	}, [ active, thisActive ])
-
-	useEffect(() => {
-		if(thisOpen !== open){
-			setTimeout(() => setThisOpen(open), 500)
-		}
-	}, [open, thisOpen])
+	}, [ active ])
 
 	return(
-		<div className={styles.garageDoor}>
-		{!thisActive ? 
-			(!thisOpen ? <Closed/> : <Open/>) :
-			(!thisOpen ? <Closing/> : <Opening/>) 
-		}
-		</div>
+		<header className={styles.garageDoor}>
+			{!thisActive ? 
+				(!thisOpen ? <Closed/> : <Open/>) :
+				(!thisOpen ? <Closing/> : <Opening/>) 
+			}
+		</header>
 	)
 }

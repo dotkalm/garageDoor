@@ -36,7 +36,6 @@ const Home = (props: GarageLogProps) => {
 		stopPolling,
 	} = useQuery(gql`${query}`, options)
 
-
 	const garageState = data?.garageState
 	const lazyLoaderLogs = data?.lazyLoaderLogs
 	const garageLog = data?.garageLog
@@ -44,13 +43,11 @@ const Home = (props: GarageLogProps) => {
 		entries.length > 0 && 
 		lazyLoaderLogs.length > 0
 	
-	let time
-
 	pollMs === 500 ? startPolling(500) : stopPolling()
 
-
 	function scrollHandlerCallback():void{
-		if(!loading){
+		!loading && handleNotLoading()
+		function handleNotLoading(){
 			const lastEntry = entries[entries.length -1]
 			setQueryVariables({
 				lastUid: lastEntry.uid,
@@ -68,20 +65,24 @@ const Home = (props: GarageLogProps) => {
 		}
 	}
 
-	useEffect(() => { 
-	}, [ query, queryVariables ])
-
 	useEffect(() => {
-		const { ms, yyyymmdd } = last;
-		//timerId !== 0  && updateHead()
-		if(!active){
+		if(last.ms !== 0){
+			!active && syncHead() 
+		}
+		function syncHead(){
+			const { ms, yyyymmdd } = last;
 			const [ { uid, entries: firstDayEntries }] = entries
 			const [ { timestamp, action } ] = firstDayEntries
 			if(ms !== timestamp){
-				console.log('TIME TO ROCK', active)
+				const variables = {
+					lastKnownTimeStamp: ms
+				}
+				//setOptions({ ...options, variables })
+				//setQuery(GARAGE_LOG)
+				console.log('READY TO ROCK')
 			}
 		}
-	}, [ last, timerId, active ])
+	}, [ active ])
 
 	useEffect(() => {
 		active ? toggleActive() : resetPolling() 
@@ -135,7 +136,6 @@ const Home = (props: GarageLogProps) => {
 	const resetPolling = useCallback(() => {
 		pollMs !== 500 && pollResetter()
 		function pollResetter(){
-			time = undefined
 			setPollMs(500) 
 		}
 	}, [ pollMs ])
