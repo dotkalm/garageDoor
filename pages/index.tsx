@@ -143,7 +143,7 @@ const Home = (props: GarageLogProps) => {
 					open={open}
 					setLast={setLast}
 					syncHead={syncHead}
-					toggleActive={toggleActive}
+					setActive={setActive}
 				/>
 				<Entries garageLog={entries} loading={loading}/>
 			</main>
