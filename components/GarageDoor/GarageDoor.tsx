@@ -7,35 +7,37 @@ import type { GarageStateType, GarageDoorPropsType } from 'client/types'
 
 export default function GarageDoor({ 
 	active, 
-	getNewHead
+	getNewHead,
 	ms, 
 	open, 
 	syncHead, 
+	headLoading,
+	toggleActive,
 }: GarageDoorPropsType){
 	const [ thisActive, setThisActive ] = useState(active)
 	const [ thisOpen, setThisOpen ] = useState(open)
 
 	useEffect(() => {
-		thisActive !== active && setTimeout(() => {
-			setThisOpen(open)
-			setThisActive(active)
+		function updateHead(){
 			getNewHead({
 				variables: {
 					lastKnownTimeStamp: ms
 				}, 
 				onCompleted: ({ garageLog }) => {
 					syncHead(garageLog)
+					toggleActive(!active)
 				}
 			})
-		}, 500)
-	}, [ active ])
+		}
+		active && updateHead()
+	},[ active ])
 
 	return(
 		<header className={styles.garageDoor}>
-			{!thisActive ? 
-				(!thisOpen ? <Closed/> : <Open/>) :
-				(!thisOpen ? <Closing/> : <Opening/>) 
-			}
+		{!active ? 
+			(!open ? <Closed/> : <Open/>) :
+			(!open ? <Closing/> : <Opening/>) 
+		}
 		</header>
 	)
 }

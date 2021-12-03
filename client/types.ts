@@ -1,3 +1,4 @@
+import type { DocumentNode } from '@apollo/client'
 export type DayProps = {
 	day: GarageLogType,
 	index: number
@@ -8,9 +9,11 @@ export type LastType = {
 }
 export type GarageDoorPropsType = {
 	active: boolean
-	last: LastType 
+	getNewHead: DocumentNode 
+	headLoading: boolean
+	ms: number
 	open: boolean
-	setLast: (last: LastType) => void
+	syncHead: () => void
 }
 export type EntriesType = {
 	timestamp: number,

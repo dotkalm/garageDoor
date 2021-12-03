@@ -80,7 +80,7 @@ const Home = (props: GarageLogProps) => {
 
 	useEffect(() => {
 		garageState && newActivityHandler()
-	},  [ garageState, open ])
+	},  [ garageState ])
 
 	useEffect(() => {
 		lazyLoadConditions && lazyLoad()
@@ -101,15 +101,9 @@ const Home = (props: GarageLogProps) => {
 	}, [ entries, lazyLoaderLogs ])
 
 
-	const toggleActive = useCallback(() => {
-		pollMs === 500 && clearActive()
-		async function clearActive(){
-			setPollMs(500*100)
-			setTimeout(() => {
-				setActive(false)
-			}, 1000 * 12)
-		}
-	}, [ active, pollMs, ms ]) 
+	const toggleActive = useCallback((newActiveState) => {
+		setActive(newActiveState)
+	}, [ ]) 
 
 	const newActivityHandler = useCallback(() => {
 		open !== garageState.open && updateAccordingly()
@@ -118,8 +112,10 @@ const Home = (props: GarageLogProps) => {
 			setOpen(garageState.open)
 			setLast({ 
 				ms: garageState.mostRecentMs, 
-				yyyymmdd: garageState.mostRecentDay 
+				yyyymmdd: garageState.mostRecentDay,
+				lastUpdatedObject: garageState.lastUpdatedObject 
 			})
+			setPollMs(500*100)
 		}
 	}, [ garageState, open ])
 
@@ -147,6 +143,7 @@ const Home = (props: GarageLogProps) => {
 					open={open}
 					setLast={setLast}
 					syncHead={syncHead}
+					toggleActive={toggleActive}
 				/>
 				<Entries garageLog={entries} loading={loading}/>
 			</main>
