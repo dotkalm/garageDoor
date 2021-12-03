@@ -5,7 +5,13 @@ import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
 import type { GarageStateType, GarageDoorPropsType } from 'client/types'
 
-export default function GarageDoor({ open, active }: GarageDoorPropsType){
+export default function GarageDoor({ 
+	active, 
+	getNewHead
+	ms, 
+	open, 
+	syncHead, 
+}: GarageDoorPropsType){
 	const [ thisActive, setThisActive ] = useState(active)
 	const [ thisOpen, setThisOpen ] = useState(open)
 
@@ -13,6 +19,14 @@ export default function GarageDoor({ open, active }: GarageDoorPropsType){
 		thisActive !== active && setTimeout(() => {
 			setThisOpen(open)
 			setThisActive(active)
+			getNewHead({
+				variables: {
+					lastKnownTimeStamp: ms
+				}, 
+				onCompleted: ({ garageLog }) => {
+					syncHead(garageLog)
+				}
+			})
 		}, 500)
 	}, [ active ])
 

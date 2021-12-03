@@ -1,9 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useQuery } from '@apollo/client'
+import { useQuery, useLazyQuery } from '@apollo/client'
 import Head from 'next/head'
 import Entries from 'components/Entries'
 import GarageDoor from 'components/GarageDoor'
 import ScrollHandler from 'components/ScrollHandler'
+import LoggerHead from 'components/LoggerHead'
 import postRequest from 'actions/postRequest'
 import styles from 'styles/Home.module.css'
 import { GarageLogResponse, GarageLogProps, GarageLogType } from 'client/types'
@@ -20,13 +21,12 @@ const initVars = { lastUid: 1, limit: 4 }
 const Home = (props: GarageLogProps) => {
 	const [ active, setActive ] = useState(false)
 	const [ entries, setEntries ] = useState(props?.garageLog || [])
-	const [ last, setLast ] = useState({ ms: 0, yyyymmdd: 0 })
+	const [ { ms, yyyymmdd }, setLast ] = useState({ ms: 0, yyyymmdd: 0 })
 	const [ open, setOpen ] = useState(false)
 	const [ options, setOptions ] = useState(initialOptions)
 	const [ pollMs, setPollMs ] = useState(500)
 	const [ query, setQuery ] = useState(GARAGE_STATE)
 	const [ queryVariables, setQueryVariables ] = useState(initVars)
-	const [ timerId, setTimerId ] = useState(0)
 
 	const { 
 		data, 
@@ -37,9 +37,17 @@ const Home = (props: GarageLogProps) => {
 		stopPolling,
 	} = useQuery(query, options)
 
+	const [ 
+		getNewHead, 
+		{ 
+			loading: headLoading, 
+			error: headError, 
+			data: headData 
+		} 
+	] = useLazyQuery(GARAGE_LOG_QUERY)
+
 	const garageState = data?.garageState
 	const lazyLoaderLogs = data?.lazyLoaderLogs
-	const garageLog = data?.garageLog
 	const lazyLoadConditions = lazyLoaderLogs && 
 		entries.length > 0 && 
 		lazyLoaderLogs.length > 0
@@ -67,25 +75,6 @@ const Home = (props: GarageLogProps) => {
 	}
 
 	useEffect(() => {
-		if(last.ms !== 0){
-			!active && syncHead() 
-		}
-		function syncHead(){
-			const { ms, yyyymmdd } = last;
-			const [ { uid, entries: firstDayEntries }] = entries
-			const [ { timestamp, action } ] = firstDayEntries
-			if(ms !== timestamp){
-				const variables = {
-					lastKnownTimeStamp: ms
-				}
-				//setOptions({ ...options, variables })
-				//setQuery(GARAGE_LOG)
-				console.log('READY TO ROCK')
-			}
-		}
-	}, [ active ])
-
-	useEffect(() => {
 		active ? toggleActive() : resetPolling() 
 	}, [ active ])
 
@@ -97,10 +86,11 @@ const Home = (props: GarageLogProps) => {
 		lazyLoadConditions && lazyLoad()
 	}, [ lazyLoadConditions ])
 
-	const updateHead = useCallback(() => {
-		setQueryVariables({lastKnownTimeStamp: last.ms})
-		setQuery(GARAGE_LOG_QUERY)
-	}, [ entries, last ])
+	const syncHead = useCallback((freshEntries) => {
+		const entriesCopy = [...entries]
+		const stateHead = entriesCopy.shift()
+		setEntries([ ...freshEntries, ...entriesCopy ])
+	},[ entries ])
 
 	const lazyLoad = useCallback(() => {
 		const firstLazyUid = lazyLoaderLogs[0]?.uid
@@ -115,12 +105,11 @@ const Home = (props: GarageLogProps) => {
 		pollMs === 500 && clearActive()
 		async function clearActive(){
 			setPollMs(500*100)
-			const uniqueTimer = await setTimeout(() => {
+			setTimeout(() => {
 				setActive(false)
 			}, 1000 * 12)
-			setTimerId(0)
 		}
-	}, [ active, pollMs ]) 
+	}, [ active, pollMs, ms ]) 
 
 	const newActivityHandler = useCallback(() => {
 		open !== garageState.open && updateAccordingly()
@@ -141,7 +130,6 @@ const Home = (props: GarageLogProps) => {
 		}
 	}, [ pollMs ])
 
-
 	ScrollHandler(scrollHandlerCallback)
 
 	return (
@@ -154,9 +142,11 @@ const Home = (props: GarageLogProps) => {
 			<main className={styles.main}>
 				<GarageDoor 
 					active={active}
-					last={last}
+					getNewHead={getNewHead}
+					ms={ms}
 					open={open}
 					setLast={setLast}
+					syncHead={syncHead}
 				/>
 				<Entries garageLog={entries} loading={loading}/>
 			</main>
