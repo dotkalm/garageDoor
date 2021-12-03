@@ -108,6 +108,7 @@ const Home = (props: GarageLogProps) => {
 	const newActivityHandler = useCallback(() => {
 		open !== garageState.open && updateAccordingly()
 		function updateAccordingly(){
+			setPollMs(500*100)
 			setActive(true)
 			setOpen(garageState.open)
 			setLast({ 
@@ -115,7 +116,6 @@ const Home = (props: GarageLogProps) => {
 				yyyymmdd: garageState.mostRecentDay,
 				lastUpdatedObject: garageState.lastUpdatedObject 
 			})
-			setPollMs(500*100)
 		}
 	}, [ garageState, open ])
 
