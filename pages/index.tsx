@@ -134,6 +134,7 @@ const Home = (props: GarageLogProps) => {
 			 yyyymmdd: mostRecentDay 
 		 })
 	},[ mostRecentDay, mostRecentMs, ms, yyyymmdd ])
+
 	ScrollHandler(scrollHandlerCallback)
 
 	return (

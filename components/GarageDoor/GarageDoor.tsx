@@ -33,26 +33,35 @@ export default function GarageDoor({
 				}, 
 				onCompleted: ({ garageLog }) => {
 					syncHead(garageLog)
-					setState({ open, active })
+					setTimeout(() => setState({ open, active }), 5000)
 				}
 			})
 		}
 		active && updateHead()
 	},[ active, open, thisOpen, ms ])
 
-	// console.log({open, thisOpen, active, thisActive})
-
 	const now = Date.now().valueOf()
+	const duration = animationCheck(headerRef)
+
+	useEffect(() => {
+		duration && updateState() 
+		function updateState(){
+			setTimeout(() => {
+				setActive(false)
+				setState({open, active: false}) 
+			}, duration + 500)
+		}
+	}, [ duration ])
+
 	useEffect(() => {
 		if(ms > 0){
 			const secondsSince = Math.round((now - ms) / 1000)
 			const minutesSince = Math.round(secondsSince / 60)
-			const duration = animationCheck(headerRef)
 			if(secondsSince > 20 && thisOpen !== open){
 				setState({ active: thisActive, open })
 			}
 		}
-	}, [ ms, now ] )
+	}, [ ms, open, thisOpen ] )
 
 	return(
 		<header className={styles.garageDoor} ref={headerRef}>
