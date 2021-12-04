@@ -52,6 +52,7 @@ const Home = (props: GarageLogProps) => {
 		entries.length > 0 && 
 		lazyLoaderLogs.length > 0
 	
+	console.log(pollMs)
 	pollMs === 500 ? startPolling(500) : stopPolling()
 
 	function scrollHandlerCallback():void{
@@ -75,7 +76,10 @@ const Home = (props: GarageLogProps) => {
 	}
 
 	useEffect(() => {
-		active ? toggleActive() : resetPolling() 
+		!active 
+			? resetPolling() 
+			: (ms !== 0 && setPollMs(500*100))
+		console.log({active, pollMs})
 	}, [ active ])
 
 	useEffect(() => {
@@ -101,15 +105,10 @@ const Home = (props: GarageLogProps) => {
 	}, [ entries, lazyLoaderLogs ])
 
 
-	const toggleActive = useCallback((newActiveState) => {
-		setActive(newActiveState)
-	}, [ ]) 
-
 	const newActivityHandler = useCallback(() => {
 		open !== garageState.open && updateAccordingly()
 		function updateAccordingly(){
-			setPollMs(500*100)
-			setActive(true)
+			ms !== 0 && setActive(true)
 			setOpen(garageState.open)
 			setLast({ 
 				ms: garageState.mostRecentMs, 

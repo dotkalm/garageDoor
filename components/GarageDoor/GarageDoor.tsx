@@ -11,14 +11,18 @@ export default function GarageDoor({
 	ms, 
 	open, 
 	syncHead, 
-	headLoading,
+	headLoading: loading,
 	setActive,
 }: GarageDoorPropsType){
 
-	const [ thisActive, setThisActive ] = useState(active)
-	const [ thisOpen, setThisOpen ] = useState(open)
+	const [ state, setState ] = useState({ active, open })
+
+	const { active: thisActive, open: thisOpen } = state
 
 	const headerRef = useRef()
+
+	console.log({ active, thisActive, open, thisOpen, ms, loading})
+
 
 	useEffect(() => {
 		function updateHead(){
@@ -28,12 +32,12 @@ export default function GarageDoor({
 				}, 
 				onCompleted: ({ garageLog }) => {
 					syncHead(garageLog)
-					setThisActive(true)
+					setState({ open, active })
 				}
 			})
 		}
-		active && updateHead()
-	},[ active ])
+		(open !== thisOpen && ms > 0) && updateHead()
+	},[ active, open, thisOpen, ms ])
 
 	const svg = headerRef?.current?.childNodes 
 		&& headerRef?.current?.childNodes[0]  
@@ -44,20 +48,20 @@ export default function GarageDoor({
 	const dur = animate?.getAttribute('dur')
 
 	useEffect(() => { 
-		if(dur === typeof 'string'){
+		if(typeof dur === 'string' && active){
 			const duration = Number(dur.replace('s','')) * 1000
 			setTimeout(() => {
-				setThisOpen(open)
-				setActive(!active)
+				setActive(false)
+				setState({ ...state, active: false })
 			}, duration)
 		}
-	}, [ dur ])
+	}, [ dur, active ])
 
 	return(
 		<header className={styles.garageDoor} ref={headerRef}>
-		{thisActive 
-			? (!open ? <Closing/> : <Opening/>)
-			: (!open ? <Closed/> : <Open/>)
+		{thisActive
+			? (!thisOpen ? <Closing/> : <Opening/>)
+			: (!thisOpen ? <Closed/> : <Open/>)
 		}
 		</header>
 	)
