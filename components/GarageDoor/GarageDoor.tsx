@@ -41,7 +41,9 @@ export default function GarageDoor({
 	},[ active, open, thisOpen, ms ])
 
 	const now = Date.now().valueOf()
-	const duration = animationCheck(headerRef)
+	const svg = headerRef?.current?.childNodes 
+		&& headerRef?.current?.children[0]  
+	const duration: false | number = svg && animationCheck(svg)
 
 	useEffect(() => {
 		duration && updateState() 
