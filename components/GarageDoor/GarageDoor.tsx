@@ -4,6 +4,7 @@ import styles from './GarageDoor.module.css'
 import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
 import type { GarageDoorPropsType } from 'client/types'
+import animationCheck from 'actions/animationCheck'
 
 export default function GarageDoor({ 
 	active, 
@@ -15,14 +16,14 @@ export default function GarageDoor({
 	setActive,
 }: GarageDoorPropsType){
 
-	const [ state, setState ] = useState({ active, open })
-
-	const { active: thisActive, open: thisOpen } = state
+	const [ 
+		{ 
+			active: thisActive, 
+			open: thisOpen
+		}, 
+		setState ] = useState({ active, open })
 
 	const headerRef = useRef()
-
-	console.log({ active, thisActive, open, thisOpen, ms, loading})
-
 
 	useEffect(() => {
 		function updateHead(){
@@ -36,26 +37,22 @@ export default function GarageDoor({
 				}
 			})
 		}
-		(open !== thisOpen && ms > 0) && updateHead()
+		active && updateHead()
 	},[ active, open, thisOpen, ms ])
 
-	const svg = headerRef?.current?.childNodes 
-		&& headerRef?.current?.childNodes[0]  
-	const polygon = svg?.childNodes 
-		&& svg?.childNodes[0]
-	const animate = polygon?.childNodes 
-		&& polygon?.childNodes[0]
-	const dur = animate?.getAttribute('dur')
+	// console.log({open, thisOpen, active, thisActive})
 
-	useEffect(() => { 
-		if(typeof dur === 'string' && active){
-			const duration = Number(dur.replace('s','')) * 1000
-			setTimeout(() => {
-				setActive(false)
-				setState({ ...state, active: false })
-			}, duration)
+	const now = Date.now().valueOf()
+	useEffect(() => {
+		if(ms > 0){
+			const secondsSince = Math.round((now - ms) / 1000)
+			const minutesSince = Math.round(secondsSince / 60)
+			const duration = animationCheck(headerRef)
+			if(secondsSince > 20 && thisOpen !== open){
+				setState({ active: thisActive, open })
+			}
 		}
-	}, [ dur, active ])
+	}, [ ms, now ] )
 
 	return(
 		<header className={styles.garageDoor} ref={headerRef}>

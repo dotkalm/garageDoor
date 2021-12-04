@@ -47,12 +47,13 @@ const Home = (props: GarageLogProps) => {
 	] = useLazyQuery(GARAGE_LOG_QUERY)
 
 	const garageState = data?.garageState
+	const mostRecentMs = garageState?.mostRecentMs
+	const mostRecentDay = garageState?.mostRecentDay
 	const lazyLoaderLogs = data?.lazyLoaderLogs
 	const lazyLoadConditions = lazyLoaderLogs && 
 		entries.length > 0 && 
 		lazyLoaderLogs.length > 0
 	
-	console.log(pollMs)
 	pollMs === 500 ? startPolling(500) : stopPolling()
 
 	function scrollHandlerCallback():void{
@@ -79,7 +80,6 @@ const Home = (props: GarageLogProps) => {
 		!active 
 			? resetPolling() 
 			: (ms !== 0 && setPollMs(500*100))
-		console.log({active, pollMs})
 	}, [ active ])
 
 	useEffect(() => {
@@ -125,6 +125,15 @@ const Home = (props: GarageLogProps) => {
 		}
 	}, [ pollMs ])
 
+	useEffect(() => {
+		( mostRecentDay && mostRecentMs )
+			&&
+		( ms !== mostRecentMs && yyyymmdd !== mostRecentDay )
+		 && setLast({ 
+			 ms: mostRecentMs, 
+			 yyyymmdd: mostRecentDay 
+		 })
+	},[ mostRecentDay, mostRecentMs, ms, yyyymmdd ])
 	ScrollHandler(scrollHandlerCallback)
 
 	return (
