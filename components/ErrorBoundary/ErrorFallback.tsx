@@ -5,7 +5,6 @@ export default function ErrorFallback(props: FallbackProps){
 		if(error instanceof Error){
 			return(
 				<div>
-					SOMETHING IS WRONG
 					{error.message}
 				</div>
 			)

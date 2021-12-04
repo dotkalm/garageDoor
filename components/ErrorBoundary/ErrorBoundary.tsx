@@ -21,45 +21,45 @@ type State = {
 }
 
 export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
-  static defaultProps: {}
+	static defaultProps: {}
 
-  constructor(props: ErrorBoundaryProps) {
-    super(props)
-    this.state = {
-      error: undefined,
-      info: undefined,
-    }
-  }
+	constructor(props: ErrorBoundaryProps) {
+		super(props)
+		this.state = {
+			error: undefined,
+			info: undefined,
+		}
+	}
 
-  componentDidCatch(error: Error, info: ErrorInfo): void {
-    const { onError } = this.props
+	componentDidCatch(error: Error, info: ErrorInfo): void {
+		const { onError } = this.props
 
-    if (typeof onError === 'function') {
-      try {
-        onError.call(this, error, info ? info.componentStack : '')
-      } catch (ignoredError) {
-        console.log('ignoredError :', ignoredError)
-      }
-    }
+		if (typeof onError === 'function') {
+			try {
+				onError.call(this, error, info ? info.componentStack : '')
+			} catch (ignoredError) {
+				console.log('ignoredError :', ignoredError)
+			}
+		}
 
-    this.setState({ error, info })
-  }
+		this.setState({ error, info })
+	}
 
-  render() {
-    const { children, FallbackComponent } = this.props
-    const { error, info } = this.state
+	render() {
+		const { children, FallbackComponent } = this.props
+		const { error, info } = this.state
 
-    if (error && FallbackComponent) {
-      return (
-        <FallbackComponent
-          componentStack={info ? info.componentStack : ''}
-          error={error}
-        />
-      )
-    }
+		if (error && FallbackComponent) {
+			return (
+				<FallbackComponent
+				componentStack={info ? info.componentStack : ''}
+				error={error}
+				/>
+			)
+		}
 
-    return children || null
-  }
+		return children || null
+	}
 }
 
 ErrorBoundary.defaultProps = {

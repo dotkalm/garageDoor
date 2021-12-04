@@ -4,7 +4,6 @@ import Head from 'next/head'
 import Entries from 'components/Entries'
 import GarageDoor from 'components/GarageDoor'
 import ScrollHandler from 'components/ScrollHandler'
-import ErrorBoundary from 'components/ErrorBoundary'
 import styles from 'styles/Home.module.css'
 import { GarageLogProps } from 'client/types'
 import { 
@@ -157,9 +156,7 @@ const Home = (props: GarageLogProps) => {
 					syncHead={syncHead}
 					setActive={setActive}
 				/>
-				<ErrorBoundary>
-					<Entries garageLog={entries} loading={loading}/>
-				</ErrorBoundary>
+				<Entries garageLog={entries} loading={loading}/>
 			</main>
 		</div>
 	)
