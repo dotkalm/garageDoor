@@ -3,6 +3,7 @@ import { useQuery, useLazyQuery } from '@apollo/client'
 import Head from 'next/head'
 import Entries from 'components/Entries'
 import GarageDoor from 'components/GarageDoor'
+import HeadFetcher from 'components/HeadFetcher'
 import ScrollHandler from 'components/ScrollHandler'
 import styles from 'styles/Home.module.css'
 import { GarageLogProps } from 'client/types'
@@ -11,8 +12,10 @@ import {
 	GARAGE_LOG_QUERY,
 	GARAGE_STATE,
 } from 'client/queries'
+
 import { contentString } from 'fixtures/meta'
 import { indexResolver } from 'server/staticPropGetter'
+
 const initialOptions = { }
 const initVars = { lastUid: 1, limit: 4 }
 
@@ -132,12 +135,13 @@ const Home = (props: GarageLogProps) => {
 		( mostRecentDay && mostRecentMs )
 			&&
 		( ms !== mostRecentMs && yyyymmdd !== mostRecentDay )
-		 && setLast({ 
+		 && setLast({
 			 ms: mostRecentMs, 
 			 yyyymmdd: mostRecentDay 
 		 })
 	},[ mostRecentDay, mostRecentMs, ms, yyyymmdd ])
 
+	HeadFetcher(entries, getNewHead, ms, syncHead)
 	ScrollHandler(scrollHandlerCallback)
 
 	return (
