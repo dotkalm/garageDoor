@@ -1,10 +1,10 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useQuery, gql } from '@apollo/client'
 import styles from './GarageDoor.module.css'
 import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
 import type { GarageDoorPropsType } from 'client/types'
-import animationCheck from 'actions/animationCheck'
+import { duration } from 'fixtures/animation'
 
 export default function GarageDoor({ 
 	active, 
@@ -22,7 +22,6 @@ export default function GarageDoor({
 		}, 
 		setState ] = useState({ active, open })
 
-	const headerRef = useRef()
 
 	useEffect(() => {
 		function updateHead(){
@@ -40,17 +39,16 @@ export default function GarageDoor({
 	},[ active, open, thisOpen, ms ])
 
 	const now = Date.now().valueOf()
-	const duration: number = animationCheck(headerRef)
 
 	useEffect(() => {
-		duration > 0 && updateState() 
+		thisActive && updateState() 
 		function updateState(){
 			setTimeout(() => {
 				setActive(false)
 				setState({open, active: false}) 
-			}, duration + 500)
+			}, (duration * 1000) + 500)
 		}
-	}, [ duration ])
+	}, [ thisActive ])
 
 	useEffect(() => {
 		if(ms > 0){
@@ -63,11 +61,11 @@ export default function GarageDoor({
 	}, [ ms, open, thisOpen ] )
 
 	return(
-		<header className={styles.garageDoor} ref={headerRef}>
-		{thisActive
-			? (!thisOpen ? <Closing/> : <Opening/>)
-			: (!thisOpen ? <Closed/> : <Open/>)
-		}
+		<header className={styles.garageDoor}>
+			{thisActive
+				? (!thisOpen ? <Closing/> : <Opening/>)
+				: (!thisOpen ? <Closed/> : <Open/>)
+			}
 		</header>
 	)
 }
