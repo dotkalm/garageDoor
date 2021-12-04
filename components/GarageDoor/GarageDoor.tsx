@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useQuery, gql } from '@apollo/client'
 import styles from './GarageDoor.module.css'
-import { GARAGE_STATE } from 'client/queries'
 import { Open, Closed, Closing, Opening } from './State'
 import type { GarageDoorPropsType } from 'client/types'
 import { duration } from 'fixtures/animation'
@@ -36,9 +34,8 @@ export default function GarageDoor({
 			})
 		}
 		active && updateHead()
-	},[ active, open, thisOpen, ms ])
+	},[ active, open, thisOpen, ms, getNewHead, syncHead ])
 
-	const now = Date.now().valueOf()
 
 	useEffect(() => {
 		thisActive && updateState() 
@@ -48,9 +45,10 @@ export default function GarageDoor({
 				setState({open, active: false}) 
 			}, (duration * 1000) + 500)
 		}
-	}, [ thisActive ])
+	}, [ thisActive, open, active, setActive ])
 
 	useEffect(() => {
+		const now = Date.now().valueOf()
 		if(ms > 0){
 			const secondsSince = Math.round((now - ms) / 1000)
 			const minutesSince = Math.round(secondsSince / 60)
@@ -58,7 +56,7 @@ export default function GarageDoor({
 				setState({ active: thisActive, open })
 			}
 		}
-	}, [ ms, open, thisOpen ] )
+	}, [ ms, open, thisOpen, thisActive ] )
 
 	return(
 		<header className={styles.garageDoor}>

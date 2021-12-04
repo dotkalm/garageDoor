@@ -4,9 +4,8 @@ import Head from 'next/head'
 import Entries from 'components/Entries'
 import GarageDoor from 'components/GarageDoor'
 import ScrollHandler from 'components/ScrollHandler'
-import postRequest from 'actions/postRequest'
 import styles from 'styles/Home.module.css'
-import { GarageLogResponse, GarageLogProps, GarageLogType } from 'client/types'
+import { GarageLogProps } from 'client/types'
 import { 
 	LAZY_GARAGE_LOG, 
 	GARAGE_LOG_QUERY,
@@ -14,7 +13,7 @@ import {
 } from 'client/queries'
 import { contentString } from 'fixtures/meta'
 import { indexResolver } from 'server/staticPropGetter'
-const initialOptions = { fetchPolicy: 'network-only' }
+const initialOptions = { }
 const initVars = { lastUid: 1, limit: 4 }
 
 const Home = (props: GarageLogProps) => {
@@ -31,7 +30,6 @@ const Home = (props: GarageLogProps) => {
 		data, 
 		error, 
 		loading, 
-		fetchMore, 
 		startPolling, 
 		stopPolling,
 	} = useQuery(query, options)
@@ -75,26 +73,6 @@ const Home = (props: GarageLogProps) => {
 		}
 	}
 
-	useEffect(() => {
-		!active 
-			? resetPolling() 
-			: (ms !== 0 && setPollMs(500*100))
-	}, [ active ])
-
-	useEffect(() => {
-		garageState && newActivityHandler()
-	},  [ garageState ])
-
-	useEffect(() => {
-		lazyLoadConditions && lazyLoad()
-	}, [ lazyLoadConditions ])
-
-	const syncHead = useCallback((freshEntries) => {
-		const entriesCopy = [...entries]
-		const stateHead = entriesCopy.shift()
-		setEntries([ ...freshEntries, ...entriesCopy ])
-	},[ entries ])
-
 	const lazyLoad = useCallback(() => {
 		const firstLazyUid = lazyLoaderLogs[0]?.uid
 		const found = entries.find(e => e?.uid === firstLazyUid)
@@ -103,6 +81,12 @@ const Home = (props: GarageLogProps) => {
 		setOptions(initialOptions)
 	}, [ entries, lazyLoaderLogs ])
 
+	const resetPolling = useCallback(() => {
+		pollMs !== 500 && pollResetter()
+		function pollResetter(){
+			setPollMs(500) 
+		}
+	}, [ pollMs ])
 
 	const newActivityHandler = useCallback(() => {
 		open !== garageState.open && updateAccordingly()
@@ -112,17 +96,32 @@ const Home = (props: GarageLogProps) => {
 			setLast({ 
 				ms: garageState.mostRecentMs, 
 				yyyymmdd: garageState.mostRecentDay,
-				lastUpdatedObject: garageState.lastUpdatedObject 
 			})
 		}
-	}, [ garageState, open ])
+	}, [ garageState, open, ms ])
 
-	const resetPolling = useCallback(() => {
-		pollMs !== 500 && pollResetter()
-		function pollResetter(){
-			setPollMs(500) 
-		}
-	}, [ pollMs ])
+	console.log(error, headError)
+
+	useEffect(() => {
+		!active 
+			? resetPolling() 
+			: (ms !== 0 && setPollMs(500*100))
+	}, [ active, ms, resetPolling ])
+
+	useEffect(() => {
+		garageState && newActivityHandler()
+	},  [ garageState, newActivityHandler ])
+
+	useEffect(() => {
+		lazyLoadConditions && lazyLoad()
+	}, [ lazyLoadConditions, lazyLoad ])
+
+	const syncHead = useCallback((freshEntries) => {
+		const entriesCopy = [...entries]
+		entriesCopy.shift()
+		setEntries([ ...freshEntries, ...entriesCopy ])
+	},[ entries ])
+
 
 	useEffect(() => {
 		( mostRecentDay && mostRecentMs )
@@ -149,7 +148,6 @@ const Home = (props: GarageLogProps) => {
 					getNewHead={getNewHead}
 					ms={ms}
 					open={open}
-					setLast={setLast}
 					syncHead={syncHead}
 					setActive={setActive}
 				/>
