@@ -7,13 +7,19 @@ export type LastType = {
 	ms: number 
 	yyyymmdd: number
 }
+export type getNewHeadArgs = {
+	variables: {
+		lastKnownTimeStamp: number 
+	},
+	onCompleted: (g: GarageLogResponse) => void
+}
 export type GarageDoorPropsType = {
 	active: boolean
-	getNewHead: DocumentNode 
-	headLoading: boolean
+	getNewHead: (options: getNewHeadArgs) => void
 	ms: number
 	open: boolean
-	syncHead: () => void
+	syncHead: (e: GarageLogType[]) => void
+	setActive: (x: boolean) => void
 }
 export type EntriesType = {
 	timestamp: number,
