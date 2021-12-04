@@ -100,7 +100,12 @@ const Home = (props: GarageLogProps) => {
 		}
 	}, [ garageState, open, ms ])
 
-	console.log(error, headError)
+	if(headError){
+		throw headError
+	}
+	if(error){
+		throw error
+	}
 
 	useEffect(() => {
 		!active 
