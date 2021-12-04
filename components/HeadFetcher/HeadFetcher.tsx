@@ -12,6 +12,18 @@ export default function HeadFetcher(
 	syncHead: SyncHeadType,
 ){
 	useEffect(() => {
-		console.log(entries, ms)
+		const [ { uid, entries: mostRecent } ] = entries
+		const [ { timestamp } ] = mostRecent
+		if(ms > 0 && timestamp !== ms){
+			getNewHead({
+				variables: {
+					lastKnownTimeStamp: timestamp 
+				}, 
+				onCompleted: ({ garageLog }) => {
+					syncHead(garageLog)
+				}
+			})
+
+		}
 	}, [ ms, entries, syncHead, getNewHead ])
 }
