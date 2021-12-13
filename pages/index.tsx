@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { useQuery, useLazyQuery } from '@apollo/client'
+import { useQuery, useLazyQuery, gql } from '@apollo/client'
 import Head from 'next/head'
 import Entries from 'components/Entries'
 import GarageDoor from 'components/GarageDoor'
