@@ -5,6 +5,7 @@ import { GarageLogProps } from 'client/types'
 
 export default function Entries({ garageLog, loading }: GarageLogProps){
 	const dayMap = garageLog.map((day, index) => <DailyActivity day={day} index={index} key={day.uid}/>)
+    console.log(dayMap)
 	return(
 		<div className={styles.entries}>
 			{dayMap}

@@ -35,6 +35,7 @@ const authLink = setContext((_, { headers }) => {
 const errorLink = onError(({ graphQLErrors, networkError }) => {
 	if (graphQLErrors) {
 		graphQLErrors.forEach(({ message, locations, path, extensions }) => {
+            console.log({ message, locations, path, extensions })
 			console.error(
 				`[GraphQL error]: ${
 					extensions?.code ? `Code: ${extensions.code}` : ''

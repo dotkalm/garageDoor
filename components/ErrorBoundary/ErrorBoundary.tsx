@@ -33,7 +33,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, State> {
 
 	componentDidCatch(error: Error, info: ErrorInfo): void {
 		const { onError } = this.props
-
 		if (typeof onError === 'function') {
 			try {
 				onError.call(this, error, info ? info.componentStack : '')

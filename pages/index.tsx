@@ -19,7 +19,7 @@ import { indexResolver } from 'server/staticPropGetter'
 const initialOptions = { }
 const initVars = { lastUid: 1, limit: 4 }
 
-const Home = (props: GarageLogProps) => {
+const Index = (props: GarageLogProps) => {
 	const [ active, setActive ] = useState(false)
 	const [ entries, setEntries ] = useState(props?.garageLog || [])
 	const [ { ms, yyyymmdd }, setLast ] = useState({ ms: 0, yyyymmdd: 0 })
@@ -172,4 +172,4 @@ export async function getStaticProps(){
 	}
 	return { props: { garageLog } }
 }
-export default Home
+export default Index 

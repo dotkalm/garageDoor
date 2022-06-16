@@ -16,7 +16,7 @@ export default function parseElapsedTime(lastUpdated: number):ElapsedTime{
 		const hours = Math.floor(minutes / 60)
 		if(hours >= 24){
 			elapsedTime.hours = hours % 24
-			elapsedTime.days = hours / 24 
+			elapsedTime.days = Math.round(hours / 24)
 		}else{
 			elapsedTime.hours = hours
 		}
